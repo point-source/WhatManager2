@@ -14,7 +14,7 @@ install:
   - "cp myanonamouse/settings.example.py myanonamouse/settings.py"
   - "./manage.py migrate --noinput"
   - "sudo -- bash -c 'source /home/travis/virtualenv/python2.7/bin/activate && ./manage.py transmission_new --no-confirm what.cd'"
-  - "sudo -- bash -c 'source /home/travis/virtualenv/python2.7/bin/activate && ./manage.py transmission_new --no-confirm bibliotik.org'"
+  - "sudo -- bash -c 'source /home/travis/virtualenv/python2.7/bin/activate && ./manage.py transmission_new --no-confirm bibliotik.me'"
 script:
   - "flake8 ."
   - "./manage.py test"
