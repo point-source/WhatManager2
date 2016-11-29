@@ -12,7 +12,7 @@ import requests
 
 from WhatManager2.settings import WHAT_ANNOUNCE, WHAT_UPLOAD_URL, TRANSCODER_ADD_TORRENT_URL, \
     TRANSCODER_HTTP_USERNAME, TRANSCODER_HTTP_PASSWORD, TRANSCODER_TEMP_DIR, \
-    TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
+    TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS, SOURCE_STRING
 from WhatManager2.utils import get_artists
 from home.models import get_what_client, DownloadLocation, ReplicaSet
 from what_transcode.flac_lame import transcode_file
@@ -63,6 +63,7 @@ class TranscodeSingleJob(object):
     def create_torrent(self):
         print 'Creating .torrent file...'
         args = [
+            '-s', SOURCE_STRING,
             '-a', WHAT_ANNOUNCE,
             '-p',
             '-o', self.torrent_file_path,
