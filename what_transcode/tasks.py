@@ -63,12 +63,13 @@ class TranscodeSingleJob(object):
     def create_torrent(self):
         print 'Creating .torrent file...'
         args = [
-            '-s', SOURCE_STRING,
             '-a', WHAT_ANNOUNCE,
             '-p',
             '-o', self.torrent_file_path,
             self.torrent_temp_dir,
         ]
+        if SOURCE_STRING != '':
+            args[:0] = ['-s', SOURCE_STRING]
         if call(['mktorrent'] + args) != 0:
             raise Exception('mktorrent returned non-zero')
         self.new_torrent_info_hash = get_info_hash(self.torrent_file_path)
