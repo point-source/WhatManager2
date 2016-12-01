@@ -4,8 +4,7 @@ sudo apt-get install -y libapache2-mod-wsgi python-pip flac lame sox libmysqlcli
 sudo git clone https://github.com/Rudde/mktorrent.git
 cd ./mktorrent/
 sudo make
-sudo chmod +x ./mktorrent
-sudo cp ./mktorrent /usr/bin/mktorrent
+sudo make install
 cd ../
 sudo rm -r ./mktorrent
 
