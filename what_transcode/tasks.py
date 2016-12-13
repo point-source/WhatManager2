@@ -182,7 +182,7 @@ class TranscodeSingleJob(object):
         payload['media'] = torrent['torrent']['media']
         payload[
             'release_desc'] = 'Made with LAME 3.99.3 with -h using karamanolev\'s auto transcoder' \
-                              ' from What.CD Torrent ID {0}.'.format(
+                              ' from torrent ID {0}.'.format(
             torrent['torrent']['id']) + ' Resampling or bit depth change (if needed) ' \
                                         'was done using SoX.'
 
