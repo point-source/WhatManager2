@@ -84,7 +84,10 @@ class TranscodeSingleJob(object):
         }
         response = requests.post(TRANSCODER_ADD_TORRENT_URL, data=post_data,
                                  auth=(TRANSCODER_HTTP_USERNAME, TRANSCODER_HTTP_PASSWORD))
-        response_json = response.json()
+        try:
+            response_json = response.json()
+        except Exception:
+            raise Exception('Error parsing response as json. Response: {0}'.format(response.text))
         if not response_json['success']:
             raise Exception('Cannot add {0} to wm: {1}'.format(new_id, response.text))
 
