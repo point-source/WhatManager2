@@ -21,6 +21,7 @@ WHAT_CD_DOMAIN = 'passtheheadphones.me'
 WHAT_UPLOAD_URL = 'https://{0}/upload.php'.format(WHAT_CD_DOMAIN)
 # Only for uploading
 WHAT_ANNOUNCE = 'http://please.passtheheadphones.me/SET THIS TO YOUR ANNOUNCE/announce'
+SOURCE_STRING = 'PTH'
 
 # Set this to something reasonable that only you know.
 TRANSMISSION_PASSWORD = '9dqQQ2WW'
