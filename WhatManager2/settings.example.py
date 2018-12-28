@@ -220,6 +220,7 @@ INSTALLED_APPS = [
     'mod_wsgi.server',
     # Library apps
     'bootstrapform',
+    'haystack',
     # WhatManager2 apps
     'WhatManager2',
     'login',
@@ -237,6 +238,14 @@ INSTALLED_APPS = [
     'qobuz2',
     'myanonamouse',
 ]
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

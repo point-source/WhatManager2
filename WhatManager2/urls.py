@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^whatify/', include('whatify.urls')),
     url(r'^qobuz/', include('qobuz2.urls')),
     url(r'^myanonamouse/', include('myanonamouse.urls')),
+    url(r'^search/', include('haystack.urls')),
 ]

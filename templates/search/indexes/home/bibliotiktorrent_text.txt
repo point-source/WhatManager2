@@ -1,0 +1,7 @@
+{{ object.author }}
+{{ object.title }}
+{{ object.publisher_list }}
+{{ object.isbn }}
+{{ object.year }}
+{{ object.format }}
+{{ object.tags }}

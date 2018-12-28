@@ -1,0 +1,12 @@
+{{ object.info_loads.group.id }}
+{{ object.info_loads.group.recordLabel }}
+{{ object.info_loads.group.name }}
+{{ object.info_loads.group.catalogueNumber }}
+{{ object.info_loads.group.musicInfo }}
+{{ object.info_loads.group.year }}
+{{ object.info_loads.torrent.id }}
+{{ object.info_loads.torrent.remasterYear }}
+{{ object.info_loads.torrent.filePath }}
+{{ object.info_loads.torrent.remasterCatalogueNumber }}
+{{ object.info_loads.torrent.remasterRecordLabel }}
+{{ object.info_loads.torrent.remasterTitle }}

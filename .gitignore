@@ -68,3 +68,4 @@ transmission-*/*
 python2.7
 .venv
 pip-selfcheck.json
+WhatManager2/whoosh_index

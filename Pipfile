@@ -26,6 +26,8 @@ html2bbcode = "*"
 mod-wsgi-httpd = "*"
 mod-wsgi = "*"
 mysqlclient = "*"
+django-haystack = "*"
+whoosh = "*"
 
 [requires]
 python_version = "3.6"
