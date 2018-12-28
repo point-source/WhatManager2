@@ -335,6 +335,10 @@ class WhatTorrent(models.Model, InfoHolder):
     def info_loads(self):
         return ujson.loads(self.info)
 
+    @cached_property
+    def playlist_name(self):
+        return 'what/{0}'.format(self.id)
+
     @staticmethod
     def get_or_none(request, info_hash=None, what_id=None):
         if info_hash and what_id:
@@ -440,6 +444,10 @@ class TransTorrent(TransTorrentBase):
     @property
     def path(self):
         return os.path.join(self.location.path, str(self.what_torrent.id))
+
+    @cached_property
+    def playlist_name(self):
+        return 'what/{0}'.format(self.what_torrent_id)
 
     def sync_files(self):
         if os.path.exists(self.path):

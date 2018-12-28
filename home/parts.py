@@ -11,6 +11,7 @@ from home.models import WhatTorrent, WhatFulltext, ReplicaSet, LogEntry, TransTo
 import WhatManager2.checks
 from what_profile.models import WhatUserSnapshot
 
+from haystack.query import SearchQuerySet
 
 @permission_required('home.run_checks')
 def checks(request):
@@ -54,8 +55,6 @@ def recently_downloaded(request):
     for instance in ReplicaSet.get_what_master().transinstance_set.all():
         torrents = instance.transtorrent_set.filter(torrent_done=1)
         torrents = torrents.order_by('-torrent_date_added')[:count]
-        for t in torrents:
-            t.playlist_name = 'what/{0}'.format(t.what_torrent_id)
         recent.extend(torrents)
     for instance in ReplicaSet.get_bibliotik_master().transinstance_set.all():
         bibliotik_torrents = instance.bibliotiktranstorrent_set.filter(torrent_done=1)
@@ -100,28 +99,14 @@ def recent_log(request):
 @permission_required('home.view_whattorrent')
 def search_torrents(request):
     query = request.POST.get('query') or request.GET.get('query')
-    query = ' '.join('+' + i for i in query.split())
 
-    w_fulltext = WhatFulltext.objects.only('id').all()
-    w_fulltext = w_fulltext.extra(where=['MATCH(`info`, `more_info`) AGAINST (%s IN BOOLEAN MODE)'],
-                                  params=[query])
-    w_fulltext = w_fulltext.extra(select={'score': 'MATCH(`info`) AGAINST (%s)'},
-                                  select_params=[query])
-    w_fulltext = w_fulltext.extra(order_by=['-score'])
+    result = SearchQuerySet().filter(content=query)
 
-    w_torrents_dict = WhatTorrent.objects.in_bulk([w.id for w in w_fulltext])
-    w_torrents = list()
-    for i in w_fulltext:
-        w_torrent = w_torrents_dict[i.id]
-        w_torrent.score = i.score
-        w_torrents.append(w_torrent)
+    torrents = list()
+    for r in result:
+        r.object.score = r.score
+        torrents.append(r.object)
 
-    b_torrents = bibliotik.utils.search_torrents(query)
-
-    for t in w_torrents:
-        t.playlist_name = 'what/{0}'.format(t.id)
-
-    torrents = w_torrents + b_torrents
     torrents.sort(key=lambda torrent: torrent.score, reverse=True)
 
     data = {
