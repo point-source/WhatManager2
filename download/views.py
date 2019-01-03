@@ -139,15 +139,20 @@ def delete_torrent(request, what_id):
             pass
     if not t_torrent:
         return HttpResponse('Could not find that torrent.')
+    
+    # Save these because t_torrent won't exist once removed (before rmtree, log)
+    path = t_torrent.path
+    log = 'Deleted {0} from {1}'.format(t_torrent, t_torrent.instance)
 
-    path = t_torrent.path # Save this because t_torrent won't exist before rmtree is called
     WhatTorrent.objects.get(info_hash=t_torrent.info_hash).delete()
     t_torrent.instance.client.remove_torrent(t_torrent.info_hash)
     try:
         shutil.rmtree(path, onerror=attemptFixPermissions)
+        LogEntry.add(request.user, 'action', log)
         return redirect('home:torrents')
     except OSError as e:
         if e.errno == errno.EPERM: # Operation not permitted
+            LogEntry.add(request.user, 'error', log + ' [Warning: could not remove folder {}]'.format(path))
             return HttpResponse('Error removing folder "{}". Permission denied. Please remove folder '
                                 'manually. The torrent and database entry has been successfully removed '
                                 'from Transmission and WM.'.format(path))
