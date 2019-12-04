@@ -2,7 +2,7 @@
 import os
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.staticfiles.templatetags import staticfiles
+from django.templatetags.static import static
 from django.http.response import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render, redirect
 import mutagen
@@ -94,4 +94,4 @@ def album_art(request):
     images = [os.path.join(dir, f) for f in files if is_image_file(f)]
     if len(images) == 1:
         return file_as_image(images[0])
-    return redirect(staticfiles.static('player/dgplayer/resources/fallback_avatar.png'))
+    return redirect(static('player/dgplayer/resources/fallback_avatar.png'))
