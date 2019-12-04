@@ -216,8 +216,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Web Server
-    'mod_wsgi.server',
     # Library apps
     'bootstrapform',
     # WhatManager2 apps
