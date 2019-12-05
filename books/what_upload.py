@@ -3,7 +3,7 @@ import os.path
 import shutil
 
 from WhatManager2 import manage_torrent
-from WhatManager2.settings import WHAT_UPLOAD_URL
+from WhatManager2.settings import RED_UPLOAD_URL
 from home.models import get_what_client, DownloadLocation, ReplicaSet, WhatTorrent
 from what_transcode.utils import extract_upload_errors, safe_retrieve_new_torrent, \
     get_info_hash_from_data
@@ -78,8 +78,8 @@ def upload_to_what(request, book_upload):
     upload_exception = None
     try:
         del what.session.headers['Content-type']
-        response = what.session.post(WHAT_UPLOAD_URL, data=payload, files=payload_files)
-        if response.url == WHAT_UPLOAD_URL:
+        response = what.session.post(RED_UPLOAD_URL, data=payload, files=payload_files)
+        if response.url == RED_UPLOAD_URL:
             try:
                 errors = extract_upload_errors(response.text)
             except Exception:

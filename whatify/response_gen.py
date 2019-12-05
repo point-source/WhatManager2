@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.http import urlquote
 
 from WhatManager2.utils import get_artists, get_artists_list
-from home.info_holder import WHAT_RELEASE_TYPES
+from home.info_holder import RED_RELEASE_TYPES
 from home.models import WhatTorrent, TransTorrent, ReplicaSet, WhatFileMetadataCache
 from what_transcode.utils import html_unescape
 from whatify.filtering import sort_filter_torrents
@@ -46,7 +46,7 @@ def get_artist_dict(artist, include_all=False):
                 item_data.update(torrent_groups_have[torrent_group['groupId']])
                 main_artist_groups[torrent_group['releaseType']].append(item_data)
         categories = []
-        for release_type in WHAT_RELEASE_TYPES:
+        for release_type in RED_RELEASE_TYPES:
             if main_artist_groups[release_type[0]]:
                 categories.append({
                     'name': release_type[1],

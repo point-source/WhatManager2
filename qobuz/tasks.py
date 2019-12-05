@@ -8,7 +8,7 @@ from django.db import connection
 from mutagen.flac import FLAC
 import requests
 
-from WhatManager2.settings import WHAT_ANNOUNCE
+from WhatManager2.settings import RED_ANNOUNCE
 from books import utils
 from qobuz.api import get_qobuz_client
 from qobuz.models import QobuzUpload, fix_filepath
@@ -87,7 +87,7 @@ def generate_torrents(qobuz_upload):
     utils.call_mktorrent(
         qobuz_upload.temp_media_path,
         os.path.join(qobuz_upload.temp_media_path, qobuz_upload.torrent_name + '.torrent'),
-        WHAT_ANNOUNCE,
+        RED_ANNOUNCE,
         qobuz_upload.torrent_name
     )
     pass

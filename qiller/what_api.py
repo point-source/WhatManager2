@@ -5,7 +5,7 @@ import json
 import requests
 
 
-WHAT_CD_DOMAIN = 'redacted.ch'
+RED_CD_DOMAIN = 'redacted.ch'
 
 headers = {
     'Content-type': 'application/x-www-form-urlencoded',
@@ -60,7 +60,7 @@ class CustomWhatAPI:
         except Exception:
             logger.debug('Exception logging in, making a new login')
             '''Logs in user and gets authkey from server'''
-            loginpage = 'https://{0}/login.php'.format(WHAT_CD_DOMAIN)
+            loginpage = 'https://{0}/login.php'.format(RED_CD_DOMAIN)
             data = {
                 'username': self.username,
                 'password': self.password,
@@ -82,7 +82,7 @@ class CustomWhatAPI:
 
     def request(self, action, **kwargs):
         '''Makes an AJAX request at a given action page'''
-        ajaxpage = 'https://{0}/ajax.php'.format(WHAT_CD_DOMAIN)
+        ajaxpage = 'https://{0}/ajax.php'.format(RED_CD_DOMAIN)
         params = {'action': action}
         if self.authkey:
             params['auth'] = self.authkey

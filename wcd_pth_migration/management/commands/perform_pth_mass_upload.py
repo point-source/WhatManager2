@@ -133,7 +133,7 @@ class TorrentMigrationJob(object):
             pass
         call_mktorrent(self.torrent_dir_path,
                        torrent_temp_filename,
-                       settings.WHAT_ANNOUNCE,
+                       settings.RED_ANNOUNCE,
                        self.torrent_new_name)
         with open(torrent_temp_filename, 'rb') as torrent_file:
             self.torrent_file_new_data = pthify_torrent(torrent_file.read())
@@ -220,8 +220,8 @@ class TorrentMigrationJob(object):
                 del self.what.session.headers['Content-type']
 
                 response = self.what.session.post(
-                    settings.WHAT_UPLOAD_URL, data=self.payload, files=self.payload_files)
-                if response.url == settings.WHAT_UPLOAD_URL:
+                    settings.RED_UPLOAD_URL, data=self.payload, files=self.payload_files)
+                if response.url == settings.RED_UPLOAD_URL:
                     try:
                         errors = extract_upload_errors(response.text)
                     except Exception:

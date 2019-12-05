@@ -4,7 +4,7 @@ from datetime import datetime
 from qiller.utils import strip_path_chars, time_text, extract_label
 
 
-WHAT_ARTIST_TYPES = {
+RED_ARTIST_TYPES = {
     1: 'Main',
     2: 'Guest',
     4: 'Composer',
@@ -26,7 +26,7 @@ class UploadArtist(object):
         """
         Creates an UploadArtist that will be used when submitting to What.CD
         name -- the name of the artist
-        artist_type -- an integer [1, 7] per WHAT_ARTIST_TYPES
+        artist_type -- an integer [1, 7] per RED_ARTIST_TYPES
         """
         assert type(artist_type) is int
         self.name = name

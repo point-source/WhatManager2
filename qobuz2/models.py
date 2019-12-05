@@ -9,7 +9,7 @@ from django.db import models
 # Create your models here.
 from django.forms.formsets import BaseFormSet
 from django.utils.functional import cached_property
-from qiller.metadata import WHAT_ARTIST_TYPES
+from qiller.metadata import RED_ARTIST_TYPES
 from qiller.qobuz_api import QobuzAPI
 from qiller.tidal_api import TidalAPI
 from qobuz2 import settings
@@ -112,7 +112,7 @@ class EditTracksFormSet(BaseFormSet):
 
 class EditArtistForm(forms.Form):
     name = forms.CharField()
-    artist_type = forms.ChoiceField(choices=list(WHAT_ARTIST_TYPES.items()))
+    artist_type = forms.ChoiceField(choices=list(RED_ARTIST_TYPES.items()))
 
 
 class EditArtistsFormSet(BaseFormSet):

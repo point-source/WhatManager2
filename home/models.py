@@ -19,7 +19,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from WhatManager2 import settings
-from WhatManager2.settings import FREELEECH_EMAIL_TO, WHAT_CD_DOMAIN, FREELEECH_HOSTNAME, \
+from WhatManager2.settings import FREELEECH_EMAIL_TO, RED_CD_DOMAIN, FREELEECH_HOSTNAME, \
     FREELEECH_EMAIL_FROM
 from WhatManager2.throttling import Throttler
 from WhatManager2.utils import match_properties, copy_properties, norm_t_torrent, html_unescape, \
@@ -655,7 +655,7 @@ class CustomWhatAPI:
             self.request('index')
         except Exception:
             '''Logs in user and gets authkey from server'''
-            loginpage = 'https://{0}/login.php'.format(WHAT_CD_DOMAIN)
+            loginpage = 'https://{0}/login.php'.format(RED_CD_DOMAIN)
             data = {
                 'username': self.username,
                 'password': self.password,
@@ -682,7 +682,7 @@ class CustomWhatAPI:
 
     def request(self, action, **kwargs):
         '''Makes an AJAX request at a given action page'''
-        ajaxpage = 'https://{0}/ajax.php'.format(WHAT_CD_DOMAIN)
+        ajaxpage = 'https://{0}/ajax.php'.format(RED_CD_DOMAIN)
         params = {'action': action}
         if self.authkey:
             params['auth'] = self.authkey
@@ -709,7 +709,7 @@ class CustomWhatAPI:
 
     def get_torrent(self, torrent_id):
         '''Downloads the torrent at torrent_id using the authkey and passkey'''
-        torrentpage = 'https://{0}/torrents.php'.format(WHAT_CD_DOMAIN)
+        torrentpage = 'https://{0}/torrents.php'.format(RED_CD_DOMAIN)
         params = {'action': 'download', 'id': torrent_id}
         if self.authkey:
             params['authkey'] = self.authkey
@@ -749,8 +749,8 @@ def get_what_client(request, throttle=False):
         request.what_client = None
         for i in range(3):
             try:
-                request.what_client = CustomWhatAPI(username=settings.WHAT_USERNAME,
-                                                    password=settings.WHAT_PASSWORD,
+                request.what_client = CustomWhatAPI(username=settings.RED_USERNAME,
+                                                    password=settings.RED_PASSWORD,
                                                     throttle=throttle)
                 break
             except RequestException as ex:

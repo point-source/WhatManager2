@@ -110,8 +110,8 @@ def sync_all_replicas_to_master():
 
 
 def sync_profile(request):
-    user_id = settings.WHAT_USER_ID
-    interval = settings.WHAT_PROFILE_SNAPSHOT_INTERVAL
+    user_id = settings.RED_USER_ID
+    interval = settings.RED_PROFILE_SNAPSHOT_INTERVAL
     try:
         last_snap = WhatUserSnapshot.get_last()
         if (timezone.now() - last_snap.datetime).total_seconds() < interval - 30:

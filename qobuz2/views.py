@@ -11,15 +11,15 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import last_modified
 
 from WhatManager2.management.commands import import_external_what_torrent
-from WhatManager2.settings import WHAT_ANNOUNCE, WHATIMG_USERNAME, WHATIMG_PASSWORD
-from home.info_holder import WHAT_RELEASE_TYPES
+from WhatManager2.settings import RED_ANNOUNCE, PTPIMG_USERNAME, PTPIMG_PASSWORD
+from home.info_holder import RED_RELEASE_TYPES
 from home.models import RequestException, get_what_client, WhatTorrent
 from qiller.upload import QillerUpload
 from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
 from qobuz2.models import QobuzUpload, get_qobuz_client, EditUploadForm, EditTracksFormSet, \
     NewUploadForm, EditArtistsFormSet, get_tidal_client
-from qobuz2.settings import WHATIMG_QOBUZ_ALBUM_ID
+from qobuz2.settings import PTPIMG_QOBUZ_ALBUM_ID
 from qobuz2.utils import get_temp_dir, title
 from what_transcode.utils import get_info_hash
 from what_transcode.views import run_request_transcode
@@ -160,8 +160,8 @@ def upload_cover(request, upload_id):
 
 
 def do_upload_cover(upload, temp_dir, qiller):
-    qiller.upload_cover(temp_dir, WHATIMG_USERNAME, WHATIMG_PASSWORD,
-                        WHATIMG_QOBUZ_ALBUM_ID)
+    qiller.upload_cover(temp_dir, PTPIMG_USERNAME, PTPIMG_PASSWORD,
+                        PTPIMG_QOBUZ_ALBUM_ID)
     upload.set_upload(qiller)
     upload.save()
 
@@ -218,7 +218,7 @@ def edit_upload_whatcd(request, upload):
     data = {
         'upload': upload,
         'spectrals': get_spectral_files(upload.upload),
-        'release_types': WHAT_RELEASE_TYPES,
+        'release_types': RED_RELEASE_TYPES,
     }
     return render(request, 'qobuz2/upload_whatcd.html', data)
 
@@ -344,7 +344,7 @@ def prepare(request, upload_id):
 def make_torrent(request, upload_id):
     qobuz_upload = QobuzUpload.objects.get(id=upload_id)
     qiller = qobuz_upload.upload
-    qiller.make_torrent(get_temp_dir(qiller.metadata.id), WHAT_ANNOUNCE)
+    qiller.make_torrent(get_temp_dir(qiller.metadata.id), RED_ANNOUNCE)
     qobuz_upload.set_upload(qiller)
     qobuz_upload.save()
     return redirect('qobuz2:edit_upload', upload_id)

@@ -119,7 +119,7 @@ def upload_generate_torrents(request, upload_id):
     if book_upload.what_torrent_file is None:
         utils.call_mktorrent(target_temp_filename,
                              torrent_temp_filename,
-                             WhatManager2.settings.WHAT_ANNOUNCE,
+                             WhatManager2.settings.RED_ANNOUNCE,
                              book_upload.target_filename)
         with open(torrent_temp_filename, 'rb') as file:
             book_upload.what_torrent_file = file.read()

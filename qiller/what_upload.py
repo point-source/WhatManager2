@@ -3,12 +3,12 @@ import os.path
 
 from pyquery.pyquery import PyQuery
 
-from qiller.what_api import WHAT_CD_DOMAIN
+from qiller.what_api import RED_CD_DOMAIN
 
 from qobuz2.settings import QILLER_ERROR_OUTPUT
 
-WHAT_UPLOAD_URL = 'https://{0}/upload.php'.format(WHAT_CD_DOMAIN)
-WHAT_RELEASE_TYPES = (
+RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
+RED_RELEASE_TYPES = (
     (1, 'Album'),
     (3, 'Soundtrack'),
     (5, 'EP'),
@@ -29,7 +29,7 @@ WHAT_RELEASE_TYPES = (
 
 def get_release_type_id(name):
     name = str(name)
-    for release_type in WHAT_RELEASE_TYPES:
+    for release_type in RED_RELEASE_TYPES:
         if release_type[1] == name:
             return release_type[0]
     return None
@@ -58,9 +58,9 @@ class WhatUploader(object):
         old_content_type = self.what_api.session.headers['Content-type']
         try:
             del self.what_api.session.headers['Content-type']
-            response = self.what_api.session.post(WHAT_UPLOAD_URL, data=payload,
+            response = self.what_api.session.post(RED_UPLOAD_URL, data=payload,
                                                   files=payload_files)
-            if response.url == WHAT_UPLOAD_URL:
+            if response.url == RED_UPLOAD_URL:
                 try:
                     errors = extract_upload_errors(response.text)
                 except Exception:

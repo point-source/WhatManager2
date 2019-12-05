@@ -1,21 +1,21 @@
 import os
 
-WHAT_USER_ID = 123456
-WHAT_USERNAME = 'your RED username'
-WHAT_PASSWORD = 'your RED password'
+RED_USER_ID = 123456
+RED_USERNAME = 'your RED username'
+RED_PASSWORD = 'your RED password'
 # How frequently your profile will be stored, in seconds
-WHAT_PROFILE_SNAPSHOT_INTERVAL = 10 * 60
+RED_PROFILE_SNAPSHOT_INTERVAL = 10 * 60
 # What part of your disk is guaranteed left empty by WM
 MIN_FREE_DISK_SPACE = 0.10
 # Under what ratio queued torrents won't be downloaded.
-MIN_WHAT_RATIO = 1.3
+MIN_RED_RATIO = 1.3
 # Whether the frequent sync will make sure ReleaseInfo is there. Leave False.
 SYNC_SYNCS_FILES = False
 # You might set this to ssl.redacted.ch if PTH has a long downtime, but ssl is up.
-WHAT_CD_DOMAIN = 'redacted.ch'
-WHAT_UPLOAD_URL = 'https://{0}/upload.php'.format(WHAT_CD_DOMAIN)
+RED_CD_DOMAIN = 'redacted.ch'
+RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
 # Only for uploading
-WHAT_ANNOUNCE = 'http://flacsfor.me/SET THIS TO YOUR ANNOUNCE/announce'
+RED_ANNOUNCE = 'http://flacsfor.me/SET THIS TO YOUR ANNOUNCE/announce'
 
 # Set this to something reasonable that only you know.
 TRANSMISSION_PASSWORD = '9dqQQ2WW'
@@ -27,8 +27,8 @@ TRANSMISSION_BIND_HOST = '0.0.0.0'
 TRANSMISSION_USE_SYSTEMD = True
 
 # You only need these if you are uploading books
-WHATIMG_USERNAME = 'whatimg username'
-WHATIMG_PASSWORD = 'whatimg password'
+PTPIMG_USERNAME = 'ptpimg username'
+PTPIMG_PASSWORD = 'ptpimg password'
 
 # Settings for the emails that WM will send you if there is a freeleech. By default, you don't get
 # emails. If you want emails, set FREELEECH_HOSTNAME to your machine's hostname. These settings are

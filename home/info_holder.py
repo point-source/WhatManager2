@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from WhatManager2.utils import html_unescape
 
 
-WHAT_RELEASE_TYPES = (
+RED_RELEASE_TYPES = (
     (1, 'Album'),
     (3, 'Soundtrack'),
     (5, 'EP'),
@@ -37,7 +37,7 @@ def safe_return(func):
 
 def get_release_type_name(id):
     id = int(id)
-    for type in WHAT_RELEASE_TYPES:
+    for type in RED_RELEASE_TYPES:
         if type[0] == id:
             return type[1]
     return None
@@ -45,7 +45,7 @@ def get_release_type_name(id):
 
 def get_release_type_id(name):
     name = str(name)
-    for type in WHAT_RELEASE_TYPES:
+    for type in RED_RELEASE_TYPES:
         if type[1] == name:
             return type[0]
     return None

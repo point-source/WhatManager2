@@ -20,9 +20,6 @@ from django.utils import timezone
 from WhatManager2.settings import SECRET_KEY
 
 
-WHAT_DOWNLOAD_LINK_RE = re.compile(re.escape('torrents.php?action=download&id=') + '(\d+)')
-
-
 @contextmanager
 def dummy_context_manager(*args, **kwargs):
     yield

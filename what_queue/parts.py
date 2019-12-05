@@ -5,7 +5,7 @@ from django.db.models.aggregates import Sum
 from django.shortcuts import render
 
 from WhatManager2 import manage_torrent
-from WhatManager2.settings import MIN_FREE_DISK_SPACE, MIN_WHAT_RATIO
+from WhatManager2.settings import MIN_FREE_DISK_SPACE, MIN_RED_RATIO
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method, html_unescape, get_artists
 from home.models import DownloadLocation, LogEntry, ReplicaSet, WhatTorrent, get_what_client
@@ -14,7 +14,7 @@ from what_profile.models import WhatUserSnapshot
 
 
 def get_auto_pop_ratio_delta(snapshot):
-    return snapshot.uploaded / MIN_WHAT_RATIO - snapshot.downloaded
+    return snapshot.uploaded / MIN_RED_RATIO - snapshot.downloaded
 
 
 @login_required

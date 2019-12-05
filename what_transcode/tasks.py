@@ -12,7 +12,7 @@ from django import db
 from django.utils.functional import cached_property
 from numpy import random
 
-from WhatManager2.settings import WHAT_ANNOUNCE, WHAT_UPLOAD_URL, TRANSCODER_ADD_TORRENT_URL, \
+from WhatManager2.settings import RED_ANNOUNCE, RED_UPLOAD_URL, TRANSCODER_ADD_TORRENT_URL, \
     TRANSCODER_HTTP_USERNAME, TRANSCODER_HTTP_PASSWORD, TRANSCODER_TEMP_DIR, \
     TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
 from WhatManager2.utils import get_artists
@@ -70,7 +70,7 @@ class TranscodeSingleJob(object):
     def create_torrent(self):
         print('Creating .torrent file...')
         args = [
-            '-a', WHAT_ANNOUNCE,
+            '-a', RED_ANNOUNCE,
             '-p',
             '-o', self.torrent_file_path,
             self.torrent_temp_dir,
@@ -201,8 +201,8 @@ class TranscodeSingleJob(object):
         try:
             del self.what.session.headers['Content-type']
 
-            response = self.what.session.post(WHAT_UPLOAD_URL, data=payload, files=payload_files)
-            if response.url == WHAT_UPLOAD_URL:
+            response = self.what.session.post(RED_UPLOAD_URL, data=payload, files=payload_files)
+            if response.url == RED_UPLOAD_URL:
                 try:
                     errors = extract_upload_errors(response.text)
                 except Exception:

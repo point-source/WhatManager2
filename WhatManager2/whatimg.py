@@ -6,8 +6,8 @@ from WhatManager2 import settings
 
 def login(session):
     payload = {
-        'email': settings.WHATIMG_USERNAME,
-        'pass': settings.WHATIMG_PASSWORD,
+        'email': settings.PTPIMG_USERNAME,
+        'pass': settings.PTPIMG_PASSWORD,
     }
     r = session.post('https://ptpimg.me/login.php', data=payload)
     pq = pyquery.PyQuery(r.text)
