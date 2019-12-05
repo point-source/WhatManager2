@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-cp -i WhatManager2/settings.example.py WhatManager2/settings.py
-cp -i bibliotik/settings.example.py bibliotik/settings.py
-cp -i myanonamouse/settings.example.py myanonamouse/settings.py
-cp -i qobuz2/settings.example.py qobuz2/settings.py
+cp -i WhatManager2/user_settings.example.py WhatManager2/user_settings.py
 
 sudo apt install -y python3-pip flac lame sox mktorrent curl python3-dev libssl-dev
 
