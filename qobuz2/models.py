@@ -12,8 +12,7 @@ from django.utils.functional import cached_property
 from qiller.metadata import RED_ARTIST_TYPES
 from qiller.qobuz_api import QobuzAPI
 from qiller.tidal_api import TidalAPI
-from qobuz2 import settings
-from WhatManager2.settings import TIDAL_SESSION_ID
+from WhatManager2.settings import TIDAL_SESSION_ID, QOBUZ_USERNAME, QOBUZ_PASSWORD
 
 
 class QobuzUpload(models.Model):
@@ -58,7 +57,7 @@ class LoginDataCache(models.Model):
 
 def get_qobuz_client(request):
     if not hasattr(request, 'qobuz_client'):
-        request.qobuz_client = QobuzAPI(settings.QOBUZ_USERNAME, settings.QOBUZ_PASSWORD,
+        request.qobuz_client = QobuzAPI(QOBUZ_USERNAME, QOBUZ_PASSWORD,
                                         LoginDataCache.get_state, LoginDataCache.set_state)
     return request.qobuz_client
 
