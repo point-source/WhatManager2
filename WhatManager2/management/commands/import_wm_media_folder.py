@@ -66,6 +66,7 @@ class Command(BaseCommand):
 
     def check_files(self):
         print('Checking for existing files...')
+        # multiple files or single file in folder
         if 'files' in self.torrent_info['info']:
             for f in self.torrent_info['info']['files']:
                 f_path = os.path.join(self.data_path, *dict(f)['path'])
@@ -73,8 +74,9 @@ class Command(BaseCommand):
                 if not os.path.isfile(f_path):
                     print('{0} does not exist. What are you giving me?'.format(f_path))
                     return False
+        # single
         else:
-            f_path = os.path.join(self.data_path, self.torrent_info['info']['name'])
+            f_path = os.path.join(self.base_dir(), self.torrent_info['info']['name'])
             print('Checking {0}'.format(f_path))
             if not os.path.isfile(f_path):
                 print('{0} does not exist. What are you giving me?'.format(f_path))
@@ -103,7 +105,7 @@ class Command(BaseCommand):
                 safe_makedirs(os.path.dirname(f_dest_path))
                 shutil.move(f_path, f_dest_path)
         else:
-            f_path = os.path.join(self.data_path, self.torrent_info['info']['name'])
+            f_path = os.path.join(self.base_dir(), self.torrent_info['info']['name'])
             f_dest_path = os.path.join(self.dest_path, self.torrent_info['info']['name'])
             safe_makedirs(os.path.dirname(f_dest_path))
             shutil.move(f_path, f_dest_path)
