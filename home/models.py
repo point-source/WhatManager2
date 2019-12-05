@@ -19,8 +19,6 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from WhatManager2 import settings
-from WhatManager2.settings import FREELEECH_EMAIL_TO, RED_CD_DOMAIN, FREELEECH_HOSTNAME, \
-    FREELEECH_EMAIL_FROM
 from WhatManager2.throttling import Throttler
 from WhatManager2.utils import match_properties, copy_properties, norm_t_torrent, html_unescape, \
     get_artists
@@ -631,7 +629,7 @@ class RateLimitExceededException(RequestException):
 
 
 def send_freeleech_email(message):
-    send_mail('Freeleech', message, FREELEECH_EMAIL_FROM, [FREELEECH_EMAIL_TO])
+    send_mail('Freeleech', message, settings.FREELEECH_EMAIL_FROM, [settings.FREELEECH_EMAIL_TO])
 
 
 class CustomWhatAPI:
@@ -655,7 +653,7 @@ class CustomWhatAPI:
             self.request('index')
         except Exception:
             '''Logs in user and gets authkey from server'''
-            loginpage = 'https://{0}/login.php'.format(RED_CD_DOMAIN)
+            loginpage = 'https://{0}/login.php'.format(settings.RED_CD_DOMAIN)
             data = {
                 'username': self.username,
                 'password': self.password,
@@ -682,7 +680,7 @@ class CustomWhatAPI:
 
     def request(self, action, **kwargs):
         '''Makes an AJAX request at a given action page'''
-        ajaxpage = 'https://{0}/ajax.php'.format(RED_CD_DOMAIN)
+        ajaxpage = 'https://{0}/ajax.php'.format(settings.RED_CD_DOMAIN)
         params = {'action': action}
         if self.authkey:
             params['auth'] = self.authkey
@@ -709,7 +707,7 @@ class CustomWhatAPI:
 
     def get_torrent(self, torrent_id):
         '''Downloads the torrent at torrent_id using the authkey and passkey'''
-        torrentpage = 'https://{0}/torrents.php'.format(RED_CD_DOMAIN)
+        torrentpage = 'https://{0}/torrents.php'.format(settings.RED_CD_DOMAIN)
         params = {'action': 'download', 'id': torrent_id}
         if self.authkey:
             params['authkey'] = self.authkey
@@ -724,7 +722,7 @@ class CustomWhatAPI:
         # Start form 1 up
         for page in count(1):
             response = self.request('browse', freetorrent=1, page=page)['response']
-            if response['pages'] > 20 and socket.gethostname() == FREELEECH_HOSTNAME:
+            if response['pages'] > 20 and socket.gethostname() == settings.FREELEECH_HOSTNAME:
                 send_freeleech_email('Site-wide freeleech.')
                 raise Exception('More than 20 pages of free torrents. Site-wide freeleech?')
             for result in response['results']:
