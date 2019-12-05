@@ -53,7 +53,7 @@ class ReplicaSet(models.Model):
 
     @property
     def torrents_size(self):
-        return sum(i.torrents_size for i in self.transinstance_set.all())
+        return sum(filter(None, (i.torrents_size for i in self.transinstance_set.all())))
 
     def get_preferred_instance(self):
         return sorted(self.transinstance_set.all(), key=lambda x: x.torrent_count)[0]
