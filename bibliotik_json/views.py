@@ -10,7 +10,7 @@ from django.http.response import HttpResponse
 from WhatManager2.utils import json_return_method
 from bibliotik import manage_bibliotik, trans_sync
 from bibliotik.models import BibliotikTransTorrent, BibliotikTorrent, BibliotikTorrentPageCache
-from bibliotik.settings import BIBLIOTIK_GET_TORRENT_URL
+from WhatManager2.settings import BIBLIOTIK_GET_TORRENT_URL
 from bibliotik.utils import BibliotikClient
 from home.models import ReplicaSet, LogEntry, TorrentAlreadyAddedException
 

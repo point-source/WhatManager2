@@ -11,7 +11,7 @@ import requests.utils
 from WhatManager2.settings import MEDIA_ROOT
 from bibliotik import manage_bibliotik
 from bibliotik.models import BibliotikTorrent, BibliotikFulltext
-from bibliotik.settings import BIBLIOTIK_UPLOAD_URL, BIBLIOTIK_DOWNLOAD_TORRENT_URL
+from WhatManager2.settings import BIBLIOTIK_UPLOAD_URL, BIBLIOTIK_DOWNLOAD_TORRENT_URL
 from home.models import DownloadLocation
 
 

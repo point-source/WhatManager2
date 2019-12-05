@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from pyquery.pyquery import PyQuery
 
-from bibliotik.settings import BIBLIOTIK_GET_TORRENT_URL
+from WhatManager2.settings import BIBLIOTIK_GET_TORRENT_URL
 from home.models import TransTorrentBase
 from what_transcode.utils import get_info_hash_from_data
 

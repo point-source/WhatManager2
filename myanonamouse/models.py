@@ -11,7 +11,7 @@ from django.utils import timezone
 from pyquery.pyquery import PyQuery
 
 from home.models import TransTorrentBase
-from myanonamouse.settings import MAM_GET_TORRENT_URL
+from WhatManager2.settings import MAM_GET_TORRENT_URL
 from what_transcode.utils import get_info_hash_from_data
 
 

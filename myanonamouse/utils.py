@@ -4,7 +4,7 @@ import pickle
 import time
 
 from myanonamouse.models import MAMLoginCache
-from myanonamouse.settings import MAM_USERNAME, MAM_PASSWORD, MAM_LOGIN_URL, MAM_ROOT_URL
+from WhatManager2.settings import MAM_USERNAME, MAM_PASSWORD, MAM_LOGIN_URL, MAM_ROOT_URL
 
 
 class MAMException(Exception):
