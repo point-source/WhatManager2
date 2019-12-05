@@ -19,7 +19,7 @@ from home.models import DownloadLocation, WhatTorrent
 from qobuz import tasks
 from qobuz.api import get_qobuz_client
 from qobuz.models import NewUploadForm, QobuzUpload, EditUploadForm
-from qobuz.settings import ADD_TRANSCODE_REQUEST_URL, ADD_TRANSCODE_USERNAME, ADD_TRANSCODE_PASSWORD
+from WhatManager2.settings import ADD_TRANSCODE_REQUEST_URL, ADD_TRANSCODE_USERNAME, ADD_TRANSCODE_PASSWORD
 from what_transcode.utils import get_info_hash
 
 

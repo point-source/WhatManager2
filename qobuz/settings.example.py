@@ -1,5 +1,0 @@
-QOBUZ_USERNAME = 'd568138@gmail.com'
-QOBUZ_PASSWORD = 'd568138@gmail.com'
-ADD_TRANSCODE_REQUEST_URL = 'https://host.com/transcode/request'
-ADD_TRANSCODE_USERNAME = 'wm username'
-ADD_TRANSCODE_PASSWORD = 'wm password'

@@ -13,7 +13,7 @@ from qiller.metadata import RED_ARTIST_TYPES
 from qiller.qobuz_api import QobuzAPI
 from qiller.tidal_api import TidalAPI
 from qobuz2 import settings
-from qobuz2.settings import TIDAL_SESSION_ID
+from WhatManager2.settings import TIDAL_SESSION_ID
 
 
 class QobuzUpload(models.Model):

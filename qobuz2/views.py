@@ -19,7 +19,7 @@ from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
 from qobuz2.models import QobuzUpload, get_qobuz_client, EditUploadForm, EditTracksFormSet, \
     NewUploadForm, EditArtistsFormSet, get_tidal_client
-from qobuz2.settings import PTPIMG_QOBUZ_ALBUM_ID
+from WhatManager2.settings import PTPIMG_QOBUZ_ALBUM_ID
 from qobuz2.utils import get_temp_dir, title
 from what_transcode.utils import get_info_hash
 from what_transcode.views import run_request_transcode

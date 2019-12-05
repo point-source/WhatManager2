@@ -5,7 +5,7 @@ from pyquery.pyquery import PyQuery
 
 from qiller.what_api import RED_CD_DOMAIN
 
-from qobuz2.settings import QILLER_ERROR_OUTPUT
+from WhatManager2.settings import QILLER_ERROR_OUTPUT
 
 RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
 RED_RELEASE_TYPES = (

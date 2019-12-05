@@ -93,6 +93,14 @@ PTPIMG_USERNAME = 'ptpimg username'
 PTPIMG_PASSWORD = 'ptpimg password'
 
 
+### QOBUZ / TIDAL SETTINGS
+QOBUZ_USERNAME = 'd568138@gmail.com'
+QOBUZ_PASSWORD = 'd568138@gmail.com'
+WHATIMG_QOBUZ_ALBUM_ID = '0'
+TIDAL_SESSION_ID = "tidal session id"
+QILLER_ERROR_OUTPUT = '/mnt/bulk/temp/qiller_error.html'
+
+
 ### FREELEECH SETTINGS
 # Settings for the emails that WM will send you if there is a freeleech. By default, you don't get
 # emails. If you want emails, set FREELEECH_HOSTNAME to your machine's hostname. These settings are
