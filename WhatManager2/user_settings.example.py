@@ -1,3 +1,5 @@
+import os
+
 ### WM2 SETTINGS
 # You only need to set that if you'll be using the userscripts. Do not put a trailing slash
 USERSCRIPT_WM_ROOT = 'http://hostname.com'
@@ -82,7 +84,7 @@ BIBLIOTIK_DOWNLOAD_TORRENT_URL = 'https://bibliotik.me/torrents/{0}/download'
 ### MYANONAMOUSE SETTINGS
 MAM_USERNAME = 'your mam username'
 MAM_PASSWORD = 'your mam password'
-MAM_ROOT_URL = 'http://www.myanonamouse.net'
+MAM_ROOT_URL = 'https://www.myanonamouse.net'
 MAM_LOGIN_URL = '/takelogin.php'
 MAM_GET_TORRENT_URL = '/t/{0}'
 
@@ -96,7 +98,7 @@ PTPIMG_PASSWORD = 'ptpimg password'
 ### QOBUZ / TIDAL SETTINGS
 QOBUZ_USERNAME = 'd568138@gmail.com'
 QOBUZ_PASSWORD = 'd568138@gmail.com'
-WHATIMG_QOBUZ_ALBUM_ID = '0'
+PTPIMG_QOBUZ_ALBUM_ID = '0'
 TIDAL_SESSION_ID = "tidal session id"
 QILLER_ERROR_OUTPUT = '/mnt/bulk/temp/qiller_error.html'
 

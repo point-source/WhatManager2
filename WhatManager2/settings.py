@@ -1,6 +1,6 @@
 import os
 
-import WhatManager2.user_settings
+from WhatManager2.user_settings import *
 
 # Transcoder Queue
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
