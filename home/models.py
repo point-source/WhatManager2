@@ -11,6 +11,8 @@ from time import sleep
 import mutagen
 import requests
 import transmissionrpc
+from whatapi import WhatAPI
+
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.db import models, transaction
@@ -376,15 +378,15 @@ class WhatTorrent(models.Model, InfoHolder):
             else:
                 data = what.request('torrent', id=what_id)['response']
 
-            filename, torrent = what.get_torrent(data['torrent']['id'])
+            r = what.get_torrent(data['torrent']['id'], full_response=True)
+            filename = re.search('filename="(.*)"', r.headers['content-disposition']).group(1)
             w_torrent = WhatTorrent(
                 id=int(data['torrent']['id']),
                 info_hash=data['torrent']['infoHash'],
-                torrent_file=base64.b64encode(torrent).decode('utf-8'),
+                torrent_file=base64.b64encode(r.content).decode('utf-8'),
                 torrent_file_name=filename,
                 retrieved=timezone.now(),
-                info=ujson.dumps(data)
-            )
+                info=ujson.dumps(data))
             w_torrent.save()
             return w_torrent
 
@@ -556,7 +558,7 @@ class WhatFileMetadataCache(models.Model):
                     abs_rel_filenames.append((abs_path, rel_path))
         abs_rel_filenames.sort(key=lambda f: f[1])
 
-        filename_hashes = {f[0]: hashlib.sha256(f[1].encode('utf-8')).hexdigest() for f in 
+        filename_hashes = {f[0]: hashlib.sha256(f[1].encode('utf-8')).hexdigest() for f in
                            abs_rel_filenames}
         hash_set = set(filename_hashes.values())
         old_cache_lines = []
@@ -604,7 +606,8 @@ class WhatLoginCache(models.Model):
 headers = {
     'Content-type': 'application/x-www-form-urlencoded',
     'Accept-Charset': 'utf-8',
-    'User-Agent': 'whatapi [isaaczafuta]'
+    'User-Agent': 'whatapi [isaaczafuta]',
+    'Authorization': settings.RED_API_KEY,
 }
 
 
@@ -742,14 +745,14 @@ class CustomWhatAPI:
                     yield int(free_group['torrentId']), free_group, free_group
 
 
-def get_what_client(request, throttle=False):
+def get_what_client(request):
     if not hasattr(request, 'what_client'):
         request.what_client = None
         for i in range(3):
             try:
-                request.what_client = CustomWhatAPI(username=settings.RED_USERNAME,
-                                                    password=settings.RED_PASSWORD,
-                                                    throttle=throttle)
+                request.what_client = WhatAPI(username=settings.RED_USERNAME,
+                                              password=settings.RED_PASSWORD,
+                                              server='https://redacted.ch')
                 break
             except RequestException as ex:
                 pass

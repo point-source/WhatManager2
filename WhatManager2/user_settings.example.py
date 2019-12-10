@@ -57,6 +57,7 @@ TRANSCODER_FORMATS = ['V0', '320']
 RED_USER_ID = 123456
 RED_USERNAME = 'your RED username'
 RED_PASSWORD = 'your RED password'
+RED_API_KEY = 'your RED api key'
 # How frequently your profile will be stored, in seconds
 RED_PROFILE_SNAPSHOT_INTERVAL = 10 * 60
 # What part of your disk is guaranteed left empty by WM

@@ -25,6 +25,7 @@ sqlparse = "*"
 html2bbcode = "*"
 mysqlclient = "*"
 gunicorn = "*"
+whatapi = {editable = true,git = "https://github.com/point-source/whatapi.git"}
 
 [requires]
 python_version = "3.8"
