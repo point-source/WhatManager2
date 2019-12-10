@@ -18,7 +18,7 @@ DATABASES = {
 }
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['whatmanager']
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -102,20 +102,3 @@ QOBUZ_PASSWORD = 'd568138@gmail.com'
 PTPIMG_QOBUZ_ALBUM_ID = '0'
 TIDAL_SESSION_ID = "tidal session id"
 QILLER_ERROR_OUTPUT = '/mnt/bulk/temp/qiller_error.html'
-
-
-### FREELEECH SETTINGS
-# Settings for the emails that WM will send you if there is a freeleech. By default, you don't get
-# emails. If you want emails, set FREELEECH_HOSTNAME to your machine's hostname. These settings are
-# for gmail, but any provider will work
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'username at gmail'
-EMAIL_HOST_PASSWORD = 'password at gmail'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-FREELEECH_EMAIL_FROM = 'your own email@provider.com'
-FREELEECH_EMAIL_TO = 'wherever you want to receive mail@provider.com'
-# Less than this and you won't get an email.
-FREELEECH_EMAIL_THRESHOLD = 2
-# The script will only send emails if the current hostname is equals this.
-FREELEECH_HOSTNAME = 'NO_EMAILS'

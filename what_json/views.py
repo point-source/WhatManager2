@@ -12,12 +12,12 @@ from django.views.decorators.http import require_POST
 
 import WhatManager2.checks
 from WhatManager2 import manage_torrent, trans_sync
-from WhatManager2.settings import MIN_FREE_DISK_SPACE, FREELEECH_EMAIL_THRESHOLD, FREELEECH_HOSTNAME
+from WhatManager2.settings import MIN_FREE_DISK_SPACE
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method
 from home.models import ReplicaSet, LogEntry, TransTorrent, TorrentAlreadyAddedException, \
     WhatTorrent, DownloadLocation, \
-    TransInstance, get_what_client, send_freeleech_email
+    TransInstance, get_what_client
 from what_json import utils
 
 
@@ -223,74 +223,6 @@ def add_torrent(request):
         result['artist'] = m_torrent.what_torrent.info_artist,
         result['title'] = m_torrent.what_torrent.info_title,
     return result
-
-
-def freeleech_add_torrent(request, master, what_id, retry=3):
-    download_locations = DownloadLocation.objects.filter(zone=ReplicaSet.ZONE_WHAT)
-    download_locations = [l for l in download_locations if
-                          l.free_space_percent >= MIN_FREE_DISK_SPACE]
-    if len(download_locations) == 0:
-        raise Exception('Unable to update freeleech: not enough space on disk.')
-    download_location = choice(download_locations)
-
-    instance = master.get_preferred_instance()
-    try:
-        m_torrent = manage_torrent.add_torrent(request, instance, download_location, what_id, True)
-        m_torrent.what_torrent.tags = 'seed'
-        m_torrent.what_torrent.added_by = request.user
-        m_torrent.what_torrent.save()
-        LogEntry.add(request.user, 'action',
-                     'Added freeleech {0} to {1} - {2}'.format(
-                         m_torrent, m_torrent.instance, download_location.path))
-    except TorrentAlreadyAddedException:
-        pass
-    except Exception as ex:
-        LogEntry.add(request.user, 'error', 'Error adding freeleech torrent {0}'.format(what_id))
-        if retry > 0:
-            time.sleep(3)
-            freeleech_add_torrent(request, master, what_id, retry - 1)
-        else:
-            raise ex
-
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser is True)
-@json_return_method
-def update_freeleech(request):
-    start_time = time.time()
-
-    added = 0
-    total_bytes = 0
-    total_torrents = 0
-    try:
-        master = ReplicaSet.get_what_master()
-        what_client = get_what_client(request)
-        for what_id, what_group, what_torrent in what_client.get_free_torrent_ids():
-            total_bytes += what_torrent['size']
-            total_torrents += 1
-            if not WhatTorrent.is_downloaded(request, what_id=what_id):
-                freeleech_add_torrent(request, master, what_id)
-                added += 1
-
-        log_type = 'action' if added > 0 else 'info'
-
-        if added >= FREELEECH_EMAIL_THRESHOLD and socket.gethostname() == FREELEECH_HOSTNAME:
-            send_freeleech_email('Added {0} freeleech torrents'.format(added))
-
-        time_taken = time.time() - start_time
-        LogEntry.add(request.user, log_type,
-                     'Successfully updated freeleech in {0:.3f}s. '
-                     '{1} added. {2} / {3} torrents total.'.format(
-                         time_taken, added, filesizeformat(total_bytes), total_torrents))
-    except Exception as ex:
-        tb = traceback.format_exc()
-        LogEntry.add(request.user, 'error',
-                     'Error updating freeleech: {0}({1})'.format(type(ex).__name__, str(ex)),
-                     tb)
-    return {
-        'success': True,
-        'added': added
-    }
 
 
 @login_required
