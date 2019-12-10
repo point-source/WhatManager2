@@ -61,6 +61,8 @@ class Command(BaseCommand):
         print('Checking for existing files...')
         if 'files' in self.torrent_info['info']:
             for f in self.torrent_info['info']['files']:
+                if f['length'] < 1:
+                    continue
                 f_path = os.path.join(self.data_path, *dict(f)['path'])
                 print('Checking {0}'.format(f_path))
                 if not os.path.isfile(f_path):
