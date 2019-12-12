@@ -12,7 +12,7 @@ from html2bbcode.parser import HTML2BBCode
 
 from WhatManager2.manage_torrent import add_torrent
 from books.utils import call_mktorrent
-from home.models import ReplicaSet, get_what_client, DownloadLocation, WhatTorrent, \
+from home.models import ReplicaSet, WhatClient, DownloadLocation, WhatTorrent, \
     RequestException, \
     BadIdException
 from wcd_pth_migration import torrentcheck
@@ -652,7 +652,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Initiating what client...')
-        what = get_what_client(dummy_request, True)
+        what = WhatClient()
         index_response = what.request('index')
         print('Status:', index_response['status'])
         print('Scanning replica sets...')

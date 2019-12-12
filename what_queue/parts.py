@@ -8,7 +8,7 @@ from WhatManager2 import manage_torrent
 from WhatManager2.settings import MIN_FREE_DISK_SPACE, MIN_RED_RATIO
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method, html_unescape, get_artists
-from home.models import DownloadLocation, LogEntry, ReplicaSet, WhatTorrent, get_what_client
+from home.models import DownloadLocation, LogEntry, ReplicaSet, WhatTorrent, WhatClient
 from what_queue.models import QueueItem, filter_group, filter_torrent, is_existing
 from what_profile.models import WhatUserSnapshot
 
@@ -146,7 +146,7 @@ def queue_stats(request):
 @permission_required('what_queue.add_queueitem', raise_exception=True)
 @json_return_method
 def add_artist(request, artist_name):
-    what_client = get_what_client(request)
+    what_client = WhatClient()
     response = what_client.request('artist', artistname=artist_name)['response']
     added = 0
     for group in response['torrentgroup']:
@@ -183,7 +183,7 @@ def add_artist(request, artist_name):
 @permission_required('what_queue.add_queueitem', raise_exception=True)
 @json_return_method
 def add_collage(request, collage_id):
-    what_client = get_what_client(request)
+    what_client = WhatClient()
     response = what_client.request('collage', id=collage_id)['response']
     added = 0
     torrent_group_count = 0

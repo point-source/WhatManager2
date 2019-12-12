@@ -17,7 +17,7 @@ from WhatManager2.settings import RED_ANNOUNCE, RED_UPLOAD_URL, TRANSCODER_ADD_T
     TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
 from WhatManager2.utils import get_artists
 from WhatManager2 import manage_torrent
-from home.models import get_what_client, DownloadLocation, ReplicaSet
+from home.models import WhatClient, DownloadLocation, ReplicaSet
 from what_transcode.flac_lame import transcode_file
 from what_transcode.utils import torrent_is_preemphasized, get_info_hash, html_unescape, \
     fix_pathname, extract_upload_errors, norm_dest_path, get_channels_number, recursive_chmod, \
@@ -338,7 +338,7 @@ class TranscodeJob(object):
             raise Exception('Destination directory exists')
 
         # Pass an object that can hold the what_client property
-        self.what = get_what_client(lambda: None)
+        self.what = WhatClient()
 
         os.makedirs(temp_dir)
         try:

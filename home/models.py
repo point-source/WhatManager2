@@ -371,7 +371,7 @@ class WhatTorrent(models.Model, InfoHolder):
             else:
                 return WhatTorrent.objects.get(id=what_id)
         except WhatTorrent.DoesNotExist:
-            what = get_what_client(request)
+            what = WhatClient()
 
             if info_hash:
                 data = what.request('torrent', hash=info_hash)['response']
@@ -597,12 +597,6 @@ class WhatFileMetadataCache(models.Model):
         return result
 
 
-class WhatLoginCache(models.Model):
-    cookies = models.TextField()
-    authkey = models.TextField()
-    passkey = models.TextField()
-
-
 headers = {
     'Content-type': 'application/x-www-form-urlencoded',
     'Accept-Charset': 'utf-8',
@@ -630,17 +624,25 @@ class RateLimitExceededException(RequestException):
     def __init__(self, response=None):
         super(RateLimitExceededException, self).__init__('Rate limit exceeded.', response)
 
-def get_what_client(request):
-    if not hasattr(request, 'what_client'):
-        request.what_client = None
-        for i in range(3):
-            try:
-                request.what_client = WhatAPI(username=settings.RED_USERNAME,
-                                              password=settings.RED_PASSWORD,
-                                              server='https://redacted.ch')
-                break
-            except RequestException as ex:
-                pass
-        if request.what_client is None:
-            raise ex
-    return request.what_client
+class WhatLoginCache(models.Model):
+    cookies = models.TextField()
+    authkey = models.TextField()
+    passkey = models.TextField()
+
+class WhatClient(WhatAPI):
+    def __init__(self):
+        try:
+            self.login_cache = WhatLoginCache.objects.get()
+            super().__init__(cookies=self.login_cache.cookies)
+        except:
+            super().__init__(username=settings.RED_USERNAME, 
+                            password=settings.RED_PASSWORD,
+                            server='https://{}'.format(settings.RED_CD_DOMAIN))
+            self.login_cache, _ = WhatLoginCache.objects.get_or_create()
+            self.login_cache.cookies = self.session.cookies
+            self.login_cache.authkey = self.authkey
+            self.login_cache.passkey = self.passkey
+            self.login_cache.save()
+    
+    def clear_login_cache(self):
+        WhatLoginCache.objects.all().delete()

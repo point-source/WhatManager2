@@ -4,7 +4,7 @@ import shutil
 
 from WhatManager2 import manage_torrent
 from WhatManager2.settings import RED_UPLOAD_URL
-from home.models import get_what_client, DownloadLocation, ReplicaSet, WhatTorrent
+from home.models import WhatClient, DownloadLocation, ReplicaSet, WhatTorrent
 from what_transcode.utils import extract_upload_errors, safe_retrieve_new_torrent, \
     get_info_hash_from_data
 
@@ -60,7 +60,7 @@ def upload_to_what(request, book_upload):
 
     print('Sending request for upload to what.cd')
 
-    what = get_what_client(request)
+    what = WhatClient()
 
     payload_files = dict()
     payload_files['file_input'] = ('torrent.torrent', book_upload.what_torrent_file)

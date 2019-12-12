@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from WhatManager2.manage_torrent import add_torrent
 from WhatManager2.utils import json_return_method
-from home.models import get_what_client, ReplicaSet, DownloadLocation
+from home.models import WhatClient, ReplicaSet, DownloadLocation
 from what_meta.models import WhatTorrentGroup, WhatArtist, WhatMetaFulltext
 from what_transcode.utils import html_unescape
 from whatify.response_gen import get_torrent_group_dict, get_torrent_groups_have, \
@@ -55,7 +55,7 @@ def get_torrent_group(request, group_id):
             raise WhatTorrentGroup.DoesNotExist()
         torrent_group = WhatTorrentGroup.objects.get(id=group_id)
     except WhatTorrentGroup.DoesNotExist:
-        what_client = get_what_client(request)
+        what_client = WhatClient()
         torrent_group = WhatTorrentGroup.update_from_what(what_client, group_id)
     data = get_torrent_group_dict(torrent_group)
     data.update(get_torrent_groups_have([torrent_group.id], True)[torrent_group.id])
@@ -73,9 +73,9 @@ def download_torrent_group(request, group_id):
     try:
         torrent_group = WhatTorrentGroup.objects.get(id=group_id)
     except WhatTorrentGroup.DoesNotExist:
-        torrent_group = WhatTorrentGroup.update_from_what(get_what_client(request), group_id)
+        torrent_group = WhatTorrentGroup.update_from_what(WhatClient(), group_id)
     if torrent_group.torrents_json is None:
-        torrent_group = WhatTorrentGroup.update_from_what(get_what_client(request), group_id)
+        torrent_group = WhatTorrentGroup.update_from_what(WhatClient(), group_id)
     ids = get_ids_to_download(torrent_group)
     try:
         instance = ReplicaSet.get_what_master().get_preferred_instance()
@@ -104,7 +104,7 @@ def get_artist(request, artist_id):
         if artist.is_shell:
             raise WhatArtist.DoesNotExist()
     except WhatArtist.DoesNotExist:
-        artist = WhatArtist.update_from_what(get_what_client(request), artist_id)
+        artist = WhatArtist.update_from_what(WhatClient(), artist_id)
     return get_artist_dict(artist, True)
 
 
@@ -123,7 +123,7 @@ def random_torrent_groups(request):
 @json_return_method
 def top10_torrent_groups(request):
     count = request.GET.get('count', 10)
-    what_client = get_what_client(request)
+    what_client = WhatClient()
     top10 = what_client.request('top10', limit=100)['response']
     group_set = set()
     results = []
