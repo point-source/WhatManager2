@@ -639,11 +639,15 @@ class WhatClient(WhatAPI):
             super().__init__(username=settings.RED_USERNAME, 
                             password=settings.RED_PASSWORD,
                             server='https://{}'.format(settings.RED_CD_DOMAIN))
-            self.login_cache, _ = WhatLoginCache.objects.get_or_create()
-            self.login_cache.cookies = pickle.dumps(self.session.cookies)
-            self.login_cache.authkey = self.authkey
-            self.login_cache.passkey = self.passkey
-            self.login_cache.save()
+            
+
+    def _login(self):
+        super()._login()
+        self.login_cache, _ = WhatLoginCache.objects.get_or_create()
+        self.login_cache.cookies = pickle.dumps(self.session.cookies)
+        self.login_cache.authkey = self.authkey
+        self.login_cache.passkey = self.passkey
+        self.login_cache.save()
     
     def clear_login_cache(self):
         WhatLoginCache.objects.all().delete()
