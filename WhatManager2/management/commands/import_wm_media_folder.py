@@ -206,7 +206,11 @@ class Command(BaseCommand):
                 except UnicodeDecodeError as e:
                     print('UnicodeDecodeError. Move failed. Please manually check {} Skipping..'.format(self.torrent_id))
                 continue
-            self.move_files()
+            try:
+                self.move_files()
+            except PermissionError:
+                print('Error: Could not move {} folder due to permissions error.'.format(self.torrent_id))
+                continue
             print('Adding torrent to WM...')
             self.trans_instance = ReplicaSet.get_what_master().get_preferred_instance()
             manage_torrent.add_torrent(self.pseudo_request, self.trans_instance,
