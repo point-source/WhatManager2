@@ -51,6 +51,9 @@ TRANSCODER_HTTP_PASSWORD = 'http password'
 TRANSCODER_TEMP_DIR = '/mnt/bulk/temp/whatup.celery.{0}'.format(os.getpid())
 TRANSCODER_ERROR_OUTPUT = '/mnt/bulk/temp/what_error.html'
 TRANSCODER_FORMATS = ['V0', '320']
+# Transcoder Queue
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_RESULT_BACKEND = 'amqp://guest@localhost//'
 
 
 ### REDACTED SETTINGS
@@ -66,7 +69,7 @@ MIN_FREE_DISK_SPACE = 0.10
 MIN_RED_RATIO = 1.3
 # Whether the frequent sync will make sure ReleaseInfo is there. Leave False.
 SYNC_SYNCS_FILES = False
-# You might set this to ssl.redacted.ch if PTH has a long downtime, but ssl is up.
+# You might set this to ssl.redacted.ch if RED has a long downtime, but ssl is up.
 RED_CD_DOMAIN = 'redacted.ch'
 RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
 # Only for uploading

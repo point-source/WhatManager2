@@ -2,10 +2,6 @@ import os
 
 from WhatManager2.user_settings import *
 
-# Transcoder Queue
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-CELERY_RESULT_BACKEND = 'amqp://guest@localhost//'
-
 # Used permissions
 # home_view_logentry - Viewing logs
 # home_add_whattorrent - Adding torrents
