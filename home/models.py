@@ -625,7 +625,7 @@ class RateLimitExceededException(RequestException):
         super(RateLimitExceededException, self).__init__('Rate limit exceeded.', response)
 
 class WhatLoginCache(models.Model):
-    cookies = models.TextField()
+    cookies = models.BinaryField()
     authkey = models.TextField()
     passkey = models.TextField()
 
@@ -633,13 +633,14 @@ class WhatClient(WhatAPI):
     def __init__(self):
         try:
             self.login_cache = WhatLoginCache.objects.get()
-            super().__init__(cookies=self.login_cache.cookies)
+            super().__init__(cookies=pickle.loads(self.login_cache.cookies),
+                            server='https://{}'.format(settings.RED_CD_DOMAIN))
         except:
             super().__init__(username=settings.RED_USERNAME, 
                             password=settings.RED_PASSWORD,
                             server='https://{}'.format(settings.RED_CD_DOMAIN))
             self.login_cache, _ = WhatLoginCache.objects.get_or_create()
-            self.login_cache.cookies = self.session.cookies
+            self.login_cache.cookies = pickle.dumps(self.session.cookies)
             self.login_cache.authkey = self.authkey
             self.login_cache.passkey = self.passkey
             self.login_cache.save()
