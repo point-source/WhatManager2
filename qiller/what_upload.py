@@ -3,9 +3,8 @@ import os.path
 
 from pyquery.pyquery import PyQuery
 
-from WhatManager2.settings import QILLER_ERROR_OUTPUT, RED_CD_DOMAIN
+from WhatManager2.settings import QILLER_ERROR_OUTPUT
 
-RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
 RED_RELEASE_TYPES = (
     (1, 'Album'),
     (3, 'Soundtrack'),
@@ -33,14 +32,6 @@ def get_release_type_id(name):
     return None
 
 
-def extract_upload_errors(html):
-    pq = PyQuery(html)
-    result = []
-    for e in pq.find('.thin > p[style="color: red; text-align: center;"]'):
-        result.append(PyQuery(e).text())
-    return result
-
-
 class MissingImageException(Exception):
     pass
 
@@ -56,18 +47,13 @@ class WhatUploader(object):
         old_content_type = self.what_api.session.headers['Content-type']
         try:
             del self.what_api.session.headers['Content-type']
-            response = self.what_api.session.post(RED_UPLOAD_URL, data=payload,
-                                                  files=payload_files)
-            if response.url == RED_UPLOAD_URL:
-                try:
-                    errors = extract_upload_errors(response.text)
-                except Exception:
-                    errors = ''
-                exception = Exception(
-                    'Error uploading data to Redacted. Errors: {0}'.format('; '.join(errors)))
-                with open(QILLER_ERROR_OUTPUT, 'w') as error_file:
-                    error_file.write(response.text.encode('utf-8'))
-                raise exception
+            try:
+                response = self.what_api.upload(data=payload, files=payload_files)
+            except Exception as e:
+                if e.response_text:
+                    with open(QILLER_ERROR_OUTPUT, 'w') as error_file:
+                        error_file.write(e.response_text.encode('utf-8'))
+                raise e
         finally:
             self.what_api.session.headers['Content-type'] = old_content_type
 
@@ -89,8 +75,6 @@ class WhatUploader(object):
         payload_files['file_input'] = ('torrent.torrent', open(self.torrent_file_path, 'rb'))
 
         payload = dict()
-        payload['submit'] = 'true'
-        payload['auth'] = self.what_api.authkey
         payload['type'] = 'Music'
         payload['groupid'] = str(group_id)
         payload['format'] = 'FLAC'
@@ -154,8 +138,6 @@ class WhatUploader(object):
         payload_files['file_input'] = ('torrent.torrent', open(self.torrent_file_path, 'rb'))
 
         payload = dict()
-        payload['submit'] = 'true'
-        payload['auth'] = self.what_api.authkey
         payload['type'] = 'Music'
         payload['artists[]'] = tuple(i.name for i in self.metadata.artists)
         payload['importance[]'] = tuple(i.artist_type for i in self.metadata.artists)

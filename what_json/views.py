@@ -16,7 +16,7 @@ from WhatManager2.settings import MIN_FREE_DISK_SPACE
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method
 from home.models import ReplicaSet, LogEntry, TransTorrent, TorrentAlreadyAddedException, \
-    WhatTorrent, DownloadLocation, TransInstance, WhatClient
+    WhatTorrent, DownloadLocation, TransInstance, RedClient
 from what_json import utils
 
 
@@ -312,7 +312,7 @@ def what_proxy(request):
     del get['action']
     if 'auth' in get:
         del get['auth']
-    what = WhatClient()
+    what = RedClient()
     response = what.request(action, **get)
     return response
 
@@ -324,5 +324,5 @@ def refresh_whattorrent(request):
     what_torrent = None
     if 'id' in request.GET:
         what_torrent = WhatTorrent.objects.get(id=request.GET['id'])
-    what_client = WhatClient()
+    what_client = RedClient()
     return utils.refresh_whattorrent(what_client, what_torrent)

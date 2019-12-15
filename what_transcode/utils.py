@@ -93,14 +93,6 @@ def norm_dest_path(torrent_name, dest_path):
     return os.path.join(dirname, filename)
 
 
-def extract_upload_errors(html):
-    pq = PyQuery(html)
-    result = []
-    for e in pq.find('.thin > p[style="color: red; text-align: center;"]'):
-        result.append(PyQuery(e).text())
-    return result
-
-
 def recursive_chmod(dest_path, mode):
     os.chmod(dest_path, mode)
     for root, dirs, files in os.walk(dest_path):

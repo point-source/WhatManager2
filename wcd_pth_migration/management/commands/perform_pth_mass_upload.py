@@ -12,7 +12,7 @@ from html2bbcode.parser import HTML2BBCode
 
 from WhatManager2.manage_torrent import add_torrent
 from books.utils import call_mktorrent
-from home.models import ReplicaSet, WhatClient, DownloadLocation, WhatTorrent, \
+from home.models import ReplicaSet, RedClient, DownloadLocation, WhatTorrent, \
     RequestException, \
     BadIdException
 from wcd_pth_migration import torrentcheck
@@ -21,8 +21,8 @@ from wcd_pth_migration.logfile import LogFile, UnrecognizedRippingLogException, 
 from wcd_pth_migration.models import DownloadLocationEquivalent, WhatTorrentMigrationStatus, \
     TorrentGroupMapping
 from wcd_pth_migration.utils import generate_spectrals_for_dir, normalize_for_matching
-from what_transcode.utils import extract_upload_errors, safe_retrieve_new_torrent, \
-    get_info_hash_from_data, recursive_chmod, pthify_torrent
+from what_transcode.utils import safe_retrieve_new_torrent, get_info_hash_from_data, \
+    recursive_chmod, pthify_torrent
 
 html_to_bbcode = HTML2BBCode()
 html_parser = HTMLParser()
@@ -165,8 +165,6 @@ class TorrentMigrationJob(object):
             raise Exception('Please let\'s not upload this bitrate MP3')
 
         payload = dict()
-        payload['submit'] = 'true'
-        payload['auth'] = self.what.authkey
         payload['type'] = '0'  # Music
         if self.existing_new_group:
             payload['groupid'] = self.existing_new_group['group']['id']
@@ -218,20 +216,13 @@ class TorrentMigrationJob(object):
             old_content_type = self.what.session.headers['Content-type']
             try:
                 del self.what.session.headers['Content-type']
-
-                response = self.what.session.post(
-                    settings.RED_UPLOAD_URL, data=self.payload, files=self.payload_files)
-                if response.url == settings.RED_UPLOAD_URL:
-                    try:
-                        errors = extract_upload_errors(response.text)
-                    except Exception:
-                        errors = ''
-                    exception = Exception(
-                        'Error uploading data to what.cd. Errors: {0}'.format('; '.join(errors)))
-                    exception.response_text = response.text
-                    with open('uploaded_error.html', 'w') as error_file:
-                        error_file.write(response.text.encode('utf-8'))
-                    raise exception
+                try:
+                    response = self.what.upload(data=self.payload, files=self.payload_files)
+                except Exception as e:
+                    if e.response_text:
+                        with open('uploaded_error.html', 'w') as error_file:
+                            error_file.write(e.response_text.encode('utf-8'))
+                    raise e
             except Exception as ex:
                 time.sleep(2)
                 try:
@@ -652,7 +643,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Initiating what client...')
-        what = WhatClient()
+        what = RedClient()
         index_response = what.request('index')
         print('Status:', index_response['status'])
         print('Scanning replica sets...')

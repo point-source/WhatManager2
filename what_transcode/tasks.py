@@ -17,10 +17,10 @@ from WhatManager2.settings import RED_ANNOUNCE, RED_UPLOAD_URL, TRANSCODER_ADD_T
     TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
 from WhatManager2.utils import get_artists
 from WhatManager2 import manage_torrent
-from home.models import WhatClient, DownloadLocation, ReplicaSet
+from home.models import RedClient, DownloadLocation, ReplicaSet
 from what_transcode.flac_lame import transcode_file
 from what_transcode.utils import torrent_is_preemphasized, get_info_hash, html_unescape, \
-    fix_pathname, extract_upload_errors, norm_dest_path, get_channels_number, recursive_chmod, \
+    fix_pathname, norm_dest_path, get_channels_number, recursive_chmod, \
     check_directory_tags_filenames, get_mp3_ids, safe_retrieve_new_torrent, pthify_torrent
 
 source_roots, dest_upload_dir = None, None
@@ -173,8 +173,6 @@ class TranscodeSingleJob(object):
         payload_files['file_input'] = ('torrent.torrent', open(self.torrent_file_path, 'rb'))
 
         payload = dict()
-        payload['submit'] = 'true'
-        payload['auth'] = self.what.authkey
         payload['type'] = 'Music'
         payload['groupid'] = torrent['group']['id']
         payload['format'] = 'MP3'
@@ -200,19 +198,13 @@ class TranscodeSingleJob(object):
         old_content_type = self.what.session.headers['Content-type']
         try:
             del self.what.session.headers['Content-type']
-
-            response = self.what.session.post(RED_UPLOAD_URL, data=payload, files=payload_files)
-            if response.url == RED_UPLOAD_URL:
-                try:
-                    errors = extract_upload_errors(response.text)
-                except Exception:
-                    errors = ''
-                exception = Exception(
-                    'Error uploading data to Redacted. Errors: {0}'.format('; '.join(errors)))
-                exception.response_text = response.text
-                with open(TRANSCODER_ERROR_OUTPUT, 'w') as error_file:
-                    error_file.write(response.text)
-                raise exception
+            try:
+                response = self.what.upload(data=payload, files=payload_files)
+            except Exception as e:
+                if e.response_text:
+                    with open(TRANSCODER_ERROR_OUTPUT, 'w') as error_file:
+                        error_file.write(e.response_text.encode('utf-8'))
+                raise e
         except Exception as ex:
             time.sleep(2)
             try:
@@ -338,7 +330,7 @@ class TranscodeJob(object):
             raise Exception('Destination directory exists')
 
         # Pass an object that can hold the what_client property
-        self.what = WhatClient()
+        self.what = RedClient()
 
         os.makedirs(temp_dir)
         try:

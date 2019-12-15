@@ -13,7 +13,7 @@ from django.views.decorators.http import last_modified
 from WhatManager2.management.commands import import_external_what_torrent
 from WhatManager2.settings import RED_ANNOUNCE, PTPIMG_USERNAME, PTPIMG_PASSWORD
 from home.info_holder import RED_RELEASE_TYPES
-from home.models import RequestException, WhatTorrent, WhatClient
+from home.models import RequestException, WhatTorrent, RedClient
 from qiller.upload import QillerUpload
 from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
@@ -168,7 +168,7 @@ def do_upload_cover(upload, temp_dir, qiller):
 
 def edit_upload_whatcd(request, upload):
     if request.method == 'POST':
-        what_client = WhatClient()
+        what_client = RedClient()
         temp_dir = get_temp_dir(upload.upload.metadata.id)
         if request.GET['type'] == 'existing':
             group_id = request.POST['group_id']

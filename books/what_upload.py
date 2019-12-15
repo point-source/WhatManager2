@@ -4,9 +4,8 @@ import shutil
 
 from WhatManager2 import manage_torrent
 from WhatManager2.settings import RED_UPLOAD_URL
-from home.models import WhatClient, DownloadLocation, ReplicaSet, WhatTorrent
-from what_transcode.utils import extract_upload_errors, safe_retrieve_new_torrent, \
-    get_info_hash_from_data
+from home.models import RedClient, DownloadLocation, ReplicaSet, WhatTorrent
+from what_transcode.utils import safe_retrieve_new_torrent, get_info_hash_from_data
 
 
 def get_what_tags(book_upload):
@@ -60,14 +59,12 @@ def upload_to_what(request, book_upload):
 
     print('Sending request for upload to what.cd')
 
-    what = WhatClient()
+    what = RedClient()
 
     payload_files = dict()
     payload_files['file_input'] = ('torrent.torrent', book_upload.what_torrent_file)
 
     payload = dict()
-    payload['submit'] = 'true'
-    payload['auth'] = what.authkey
     payload['type'] = '2'
     payload['title'] = book_upload.author + ' - ' + book_upload.title
     payload['tags'] = get_what_tags(book_upload)
@@ -78,16 +75,7 @@ def upload_to_what(request, book_upload):
     upload_exception = None
     try:
         del what.session.headers['Content-type']
-        response = what.session.post(RED_UPLOAD_URL, data=payload, files=payload_files)
-        if response.url == RED_UPLOAD_URL:
-            try:
-                errors = extract_upload_errors(response.text)
-            except Exception:
-                errors = ''
-            exception = Exception('Error uploading data to what.cd. Errors: {0}'
-                                  .format('; '.join(errors)))
-            exception.response_text = response.text
-            raise exception
+        response = what.upload(data=payload, files=payload_files)
     except Exception as ex:
         upload_exception = ex
     finally:

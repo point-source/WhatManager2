@@ -7,7 +7,7 @@ from django.utils import timezone
 from WhatManager2 import manage_torrent, settings
 from WhatManager2.settings import SYNC_SYNCS_FILES
 from home.models import WhatTorrent, DownloadLocation, TransTorrent, LogEntry, ReplicaSet, \
-    WhatFulltext, WhatClient
+    WhatFulltext, RedClient
 from what_profile.models import WhatUserSnapshot
 
 
@@ -118,5 +118,5 @@ def sync_profile(request):
             return
     except WhatUserSnapshot.DoesNotExist:
         pass
-    what = WhatClient()
+    what = RedClient()
     WhatUserSnapshot.get(what, user_id).save()

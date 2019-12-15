@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 
 import requests
 
-from home.models import WhatClient
+from home.models import RedClient
 from what_transcode.tasks import TranscodeSingleJob
 
 
@@ -49,7 +49,7 @@ class Command(BaseCommand):
         if source_dir.endswith('/'):
             source_dir = source_dir[:-1]
 
-        what = WhatClient()
+        what = RedClient()
         job = TranscodeSingleJob(what, None, report_progress, None, None, source_dir)
         job.create_torrent()
         input('Please upload the torrent and press enter...')

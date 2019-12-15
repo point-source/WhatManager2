@@ -26,6 +26,7 @@ from WhatManager2.utils import match_properties, copy_properties, norm_t_torrent
     get_artists
 from home.info_holder import InfoHolder
 from what_meta.models import WhatTorrentGroup
+from pyquery.pyquery import PyQuery
 
 
 class TorrentAlreadyAddedException(Exception):
@@ -371,7 +372,7 @@ class WhatTorrent(models.Model, InfoHolder):
             else:
                 return WhatTorrent.objects.get(id=what_id)
         except WhatTorrent.DoesNotExist:
-            what = WhatClient()
+            what = RedClient()
 
             if info_hash:
                 data = what.request('torrent', hash=info_hash)['response']
@@ -629,16 +630,19 @@ class WhatLoginCache(models.Model):
     authkey = models.TextField()
     passkey = models.TextField()
 
-class WhatClient(WhatAPI):
+class RedClient(WhatAPI):
     def __init__(self):
+        self.RED_URL = 'https://redacted.ch'
+        self.RED_UPLOAD = self.RED_URL + '/upload.php'
+
         try:
             self.login_cache = WhatLoginCache.objects.get()
             super().__init__(cookies=pickle.loads(self.login_cache.cookies),
-                            server='https://{}'.format(settings.RED_CD_DOMAIN))
+                            server=self.RED_URL)
         except:
             super().__init__(username=settings.RED_USERNAME, 
                             password=settings.RED_PASSWORD,
-                            server='https://{}'.format(settings.RED_CD_DOMAIN))
+                            server=self.RED_URL)
             
 
     def _login(self):
@@ -651,3 +655,27 @@ class WhatClient(WhatAPI):
     
     def clear_login_cache(self):
         WhatLoginCache.objects.all().delete()
+
+    def upload(self, data, files):
+        payload = {}
+        payload.update(data)
+        payload.update({
+            'submit': 'true',
+            'auth': self.authkey
+        })
+        response = self.session.post(self.RED_UPLOAD, data=payload, files=files)
+        if response.url == self.RED_UPLOAD:
+            try:
+                errors = self._extract_upload_errors(response.text)
+            except Exception as e:
+                errors = str(e)
+            e = Exception('Error uploading data to Redacted. Errors: {0}'.format('; '.join(errors)))
+            e.response_text = response.text
+            raise e
+
+    def _extract_upload_errors(self, html):
+        pq = PyQuery(html)
+        result = []
+        for e in pq.find('.thin > p[style="color: red; text-align: center;"]'):
+            result.append(PyQuery(e).text())
+        return result

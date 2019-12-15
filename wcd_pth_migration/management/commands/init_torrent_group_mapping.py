@@ -2,7 +2,7 @@ import ujson
 
 from django.core.management.base import BaseCommand
 
-from home.models import WhatClient, BadIdException
+from home.models import RedClient, BadIdException
 from wcd_pth_migration.models import WhatTorrentMigrationStatus, TorrentGroupMapping
 
 
@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Saves the current complete uploads as WhatTorrentGroupMatching objects'
 
     def handle(self, *args, **options):
-        what = WhatClient()
+        what = RedClient()
         with open('what_manager2_torrents.jsonl', 'rb') as torrents_input:
             for line in torrents_input:
                 data = ujson.loads(line)

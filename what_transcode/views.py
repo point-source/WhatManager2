@@ -14,7 +14,7 @@ from WhatManager2.manage_torrent import add_torrent
 from WhatManager2.settings import TRANSCODER_FORMATS
 from WhatManager2.utils import json_return_method
 from home.models import WhatTorrent, TransTorrent, ReplicaSet, DownloadLocation, LogEntry, \
-    WhatClient
+    RedClient
 from what_transcode.tasks import transcode
 from what_transcode.models import TranscodeRequest
 from what_transcode.utils import get_trans_torrent, torrent_is_preemphasized, get_mp3_ids
@@ -104,7 +104,7 @@ def status_table(request):
                 t_r.status = 'failed - {0}({1})'.format(type(async_result.result).__name__,
                                                         async_result.result)
                 failed.append(t_r)
-        what_client = WhatClient()
+        what_client = RedClient()
         t_r.status = t_r.status.replace(what_client.authkey, '<authkey>').replace(
             what_client.passkey, '<passkey>')
 
@@ -190,7 +190,7 @@ def run_request_transcode(request, what_id):
         except TranscodeRequest.DoesNotExist:
             pass
 
-        what_client = WhatClient()
+        what_client = RedClient()
 
         what_torrent = WhatTorrent.get_or_create(request, what_id=what_id)
         if what_torrent.info_loads['torrent']['format'] != 'FLAC':
