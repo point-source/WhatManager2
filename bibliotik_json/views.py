@@ -10,7 +10,6 @@ from django.http.response import HttpResponse
 from WhatManager2.utils import json_return_method
 from bibliotik import manage_bibliotik, trans_sync
 from bibliotik.models import BibliotikTransTorrent, BibliotikTorrent, BibliotikTorrentPageCache
-from WhatManager2.settings import BIBLIOTIK_GET_TORRENT_URL
 from bibliotik.utils import BibliotikClient
 from home.models import ReplicaSet, LogEntry, TorrentAlreadyAddedException
 
@@ -148,8 +147,7 @@ def cache_next(request):
     bibliotik_client = BibliotikClient(bibliotik_id)
     last_id = BibliotikTorrentPageCache.objects.aggregate(Max('id'))['id__max'] or 0
     next_id = last_id + 1
-    response = bibliotik_client.session.get(
-        BIBLIOTIK_GET_TORRENT_URL.format(next_id), allow_redirects=False)
+    response = bibliotik_client.get_torrent(next_id)
     if response.status_code == 200:
         pass
     elif response.status_code == 302:

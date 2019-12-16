@@ -64,6 +64,10 @@ class TrackerAccount(models.Model):
     def get_red(cls):
         return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_RED)
 
+    @classmethod
+    def get_bib(cls):
+        return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_BIBLIOTIK)
+
 class ReplicaSet(models.Model):
     zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
     name = models.TextField()

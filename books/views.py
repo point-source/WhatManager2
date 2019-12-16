@@ -6,7 +6,6 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 
 from WhatManager2 import whatimg
-from WhatManager2.settings import BIBLIOTIK_ANNOUNCE
 from home.models import TrackerAccount
 from books import settings, utils, what_upload
 from books.models import BookUploadForm, BookUpload
@@ -109,7 +108,7 @@ def upload_generate_torrents(request, upload_id):
     if book_upload.bibliotik_torrent_file is None:
         utils.call_mktorrent(target_temp_filename,
                              torrent_temp_filename,
-                             BIBLIOTIK_ANNOUNCE,
+                             TrackerAccount.get_bib().announce_url,
                              book_upload.target_filename)
         with open(torrent_temp_filename, 'rb') as file:
             book_upload.bibliotik_torrent_file = file.read()

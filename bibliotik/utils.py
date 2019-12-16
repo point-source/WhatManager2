@@ -11,7 +11,6 @@ import requests.utils
 from WhatManager2.settings import MEDIA_ROOT
 from bibliotik import manage_bibliotik
 from bibliotik.models import BibliotikTorrent, BibliotikFulltext
-from WhatManager2.settings import BIBLIOTIK_UPLOAD_URL, BIBLIOTIK_DOWNLOAD_TORRENT_URL
 from home.models import DownloadLocation
 
 
@@ -54,6 +53,11 @@ def extract_torrents(html):
 
 class BibliotikClient(object):
     def __init__(self, session_id):
+        self.BIB_URL = 'https://bibliotik.me'
+        self.BIB_UPLOAD = self.BIB_URL + '/upload/ebooks'
+        self.BIB_SEARCH = self.BIB_URL + '/torrents/'
+        self.BIB_DOWNLOAD = self.BIB_URL + '/torrents/{0}/download'
+
         self.session_id = session_id
         self.session = requests.Session()
         requests.utils.add_dict_to_cookiejar(self.session.cookies, {
@@ -66,7 +70,7 @@ class BibliotikClient(object):
             return self.auth_key
         for i in range(3):
             try:
-                response = self.session.get('https://bibliotik.me/upload/ebooks')
+                response = self.session.get(self.BIB_UPLOAD)
                 response.raise_for_status()
                 break
             except Exception:
@@ -79,11 +83,11 @@ class BibliotikClient(object):
         return self.auth_key
 
     def send_upload(self, payload, payload_files):
-        return self.session.post(BIBLIOTIK_UPLOAD_URL, data=payload, files=payload_files,
+        return self.session.post(self.BIB_UPLOAD, data=payload, files=payload_files,
                                  allow_redirects=False)
 
     def download_torrent(self, torrent_id):
-        torrent_page = BIBLIOTIK_DOWNLOAD_TORRENT_URL.format(torrent_id)
+        torrent_page = self.BIB_DOWNLOAD.format(torrent_id)
         for i in range(3):
             try:
                 r = self.session.get(torrent_page, allow_redirects=False)
@@ -100,10 +104,12 @@ class BibliotikClient(object):
                 download_exception = ex
         raise download_exception
 
+    def get_torrent(self, torrent_id):
+        return self.session.get(self.BIB_SEARCH + torrent_id, allow_redirects=False)
+
     def search(self, query):
-        url = 'https://bibliotik.me/torrents/'
-        response = self._search_request(url, query)
-        if not response.url.startswith(url):
+        response = self._search_request(self.BIB_SEARCH, query)
+        if not response.url.startswith(self.BIB_SEARCH):
             raise Exception('Search redirected to {0}. Probably invalid id. Was {1}.'.format(
                 response.url, self.session_id
             ))

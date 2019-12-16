@@ -8,7 +8,6 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from pyquery.pyquery import PyQuery
 
-from WhatManager2.settings import BIBLIOTIK_GET_TORRENT_URL
 from home.models import TransTorrentBase
 from what_transcode.utils import get_info_hash_from_data
 
@@ -23,8 +22,7 @@ def load_bibliotik_data(bibliotik_client, torrent_id):
     exception = None
     for i in range(3):
         try:
-            response = bibliotik_client.session.get(
-                BIBLIOTIK_GET_TORRENT_URL.format(torrent_id), allow_redirects=False)
+            response = bibliotik_client.get_torrent(torrent_id)
             if response.status_code != 200:
                 raise Exception('Getting bibliotik data returned HTTP {0}'
                                 .format(response.status_code))
