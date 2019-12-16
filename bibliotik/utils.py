@@ -161,7 +161,7 @@ def upload_book_to_bibliotik(bibliotik_client, book_upload):
     response = bibliotik_client.send_upload(payload, payload_files)
     response.raise_for_status()
     if response.status_code == requests.codes.ok:
-        with open(os.path.join(MEDIA_ROOT, 'bibliotik_upload.html'), 'wb') as f:
+        with open(os.path.join(MEDIA_ROOT, 'logs/bibliotik_upload.html'), 'wb') as f:
             f.write(response.content)
         raise Exception('Bibliotik does not want this. Written to media/')
     redirect_match = re.match('^https://bibliotik.me/torrents/(?P<id>\d+)$',

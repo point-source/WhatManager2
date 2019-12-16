@@ -29,7 +29,7 @@ class BookUpload(models.Model):
     description = models.TextField(null=True, validators=[MinLengthValidator(100)])
     target_filename = models.CharField(null=True, max_length=1024)
 
-    book_data = models.FileField(upload_to='book_data')
+    book_data = models.FileField(upload_to='temp/book_uploads')
     opf_data = models.TextField()
     cover_data = models.BinaryField()
     bibliotik_torrent_file = models.BinaryField(null=True)

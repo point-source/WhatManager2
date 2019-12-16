@@ -86,7 +86,7 @@ class QobuzUpload(models.Model):
 
     @cached_property
     def temp_media_path(self):
-        return os.path.join(MEDIA_ROOT, 'qobuz_uploads', self.torrent_name)
+        return os.path.join(MEDIA_ROOT, 'temp/qobuz_uploads', self.torrent_name)
 
     @cached_property
     def album_data(self):
