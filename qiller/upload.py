@@ -98,13 +98,13 @@ class QillerUpload(object):
         getattr(uploader, method)(*args, **kwargs)
         self.state = self.STATE_UPLOADED_WHAT
 
-    def upload_cover(self, temp_dir, username, password, album_id):
+    def upload_cover(self, temp_dir, username, password):
         if hasattr(self.metadata, 'image_url'):
             raise Exception('Image already uploaded to {0}'.format(self.metadata.image_url))
         for image in self.metadata.images:
             if image.name == 'large':
                 with open(os.path.join(temp_dir, image.filename), 'rb') as f:
-                    url = whatimg.upload_image_from_memory(username, password, album_id, f.read())
+                    url = whatimg.upload_image_from_memory(username, password, f.read())
                     self.metadata.image_url = url
                     return
         raise Exception('Qobuz large image not found for uploading')

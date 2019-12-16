@@ -7,7 +7,7 @@ from django.db import transaction
 from WhatManager2.locking import LockModelTables
 from WhatManager2.utils import norm_t_torrent
 from bibliotik.models import BibliotikTorrent, BibliotikTransTorrent
-from home.models import ReplicaSet, TorrentAlreadyAddedException, TransInstance
+from home.models import ReplicaSet, TorrentAlreadyAddedException, TrackerAccount, TransInstance
 
 
 def add_bibliotik_torrent(torrent_id, instance=None, location=None, bibliotik_client=None,

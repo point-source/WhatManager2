@@ -5,8 +5,8 @@ import ujson
 import requests
 
 from WhatManager2.locking import LockModelTables
-from qobuz import settings
 from qobuz.models import LoginDataCache
+from home.models import ResourceAccount
 
 
 class QobuzAPI(object):
@@ -68,7 +68,8 @@ class QobuzAPI(object):
 
 def get_qobuz_client(request):
     if not hasattr(request, 'qobuz_client'):
-        request.qobuz_client = QobuzAPI(settings.QOBUZ_USERNAME, settings.QOBUZ_PASSWORD)
+        user = ResourceAccount.get_qobuz()
+        request.qobuz_client = QobuzAPI(user.username, user.password)
     return request.qobuz_client
 
 

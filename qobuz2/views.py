@@ -18,7 +18,6 @@ from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
 from qobuz2.models import QobuzUpload, get_qobuz_client, EditUploadForm, EditTracksFormSet, \
     NewUploadForm, EditArtistsFormSet, get_tidal_client
-from WhatManager2.settings import PTPIMG_QOBUZ_ALBUM_ID
 from qobuz2.utils import get_temp_dir, title
 from what_transcode.utils import get_info_hash
 from what_transcode.views import run_request_transcode
@@ -160,8 +159,7 @@ def upload_cover(request, upload_id):
 
 def do_upload_cover(upload, temp_dir, qiller):
     user = ResourceAccount.get_ptpimg()
-    qiller.upload_cover(temp_dir, user.username, user.password,
-                        PTPIMG_QOBUZ_ALBUM_ID)
+    qiller.upload_cover(temp_dir, user.username, user.password)
     upload.set_upload(qiller)
     upload.save()
 

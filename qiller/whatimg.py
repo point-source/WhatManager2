@@ -12,7 +12,7 @@ def login(session, username, password):
     api_key = pq('input').attr('value')
     return api_key
 
-def upload_image_from_memory(username, password, album_id, data):
+def upload_image_from_memory(username, password, data):
     session = requests.Session()
     api_key = login(session, username, password)
     files = {

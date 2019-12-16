@@ -62,8 +62,4 @@ WCD_PTH_SPECTRALS_HTML_PATH = '/path/to/target/folder/with/html/and/pngs'
 
 
 ### QOBUZ / TIDAL SETTINGS
-QOBUZ_USERNAME = 'd568138@gmail.com'
-QOBUZ_PASSWORD = 'd568138@gmail.com'
-PTPIMG_QOBUZ_ALBUM_ID = '0'
-TIDAL_SESSION_ID = "tidal session id"
 QILLER_ERROR_OUTPUT = '/mnt/bulk/temp/qiller_error.html'
