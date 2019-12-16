@@ -11,7 +11,6 @@ from django.utils import timezone
 from pyquery.pyquery import PyQuery
 
 from home.models import TransTorrentBase
-from WhatManager2.settings import MAM_GET_TORRENT_URL
 from what_transcode.utils import get_info_hash_from_data
 
 
@@ -19,8 +18,7 @@ def load_mam_data(mam_client, torrent_id):
     exception = None
     for i in range(3):
         try:
-            response = mam_client.request(MAM_GET_TORRENT_URL.format(torrent_id))
-            return response.text
+            return mam_client.get_torrent(torrent_id).text
         except Exception as ex:
             print('Error while retrieving MAM data. Will retry: {0}'.format(ex))
             time.sleep(2)

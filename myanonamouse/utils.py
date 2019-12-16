@@ -4,7 +4,7 @@ import pickle
 import time
 
 from myanonamouse.models import MAMLoginCache
-from WhatManager2.settings import MAM_USERNAME, MAM_PASSWORD, MAM_LOGIN_URL, MAM_ROOT_URL
+from home.models import TrackerAccount
 
 
 class MAMException(Exception):
@@ -15,19 +15,12 @@ class LoginException(MAMException):
     pass
 
 
-def process_url(url):
-    if url.startswith('http://') or url.startswith('https://'):
-        return url
-    elif url.startswith('//'):
-        return 'http:' + url
-    elif url.startswith('/'):
-        return MAM_ROOT_URL + url
-    else:
-        return MAM_ROOT_URL + '/' + url
-
-
 class MAMClient(object):
     def __init__(self, username, password):
+        self.MAM_URL = 'https://www.myanonamouse.net'
+        self.MAM_LOGIN = self.MAM_URL + '/takelogin.php'
+        self.MAM_GET_TORRENT = self.MAM_URL + '/t/{0}'
+
         self.username = username
         self.password = password
         self.session = requests.Session()
@@ -43,7 +36,7 @@ class MAMClient(object):
             'username': self.username,
             'password': self.password,
         }
-        r = self.session.post(process_url(MAM_LOGIN_URL), data=data, allow_redirects=False)
+        r = self.session.post(self.MAM_LOGIN, data=data, allow_redirects=False)
         if r.status_code != 302:
             raise LoginException()
         if r.headers['location'] != '/index.php':
@@ -52,7 +45,7 @@ class MAMClient(object):
         login_cache = MAMLoginCache(cookies=pickle.dumps([c for c in self.session.cookies]))
         login_cache.save()
 
-    def _request(self, url, try_login):
+    def request(self, url, try_login=True):
         resp = self.session.request('GET', url, allow_redirects=False)
         if resp.status_code == 302:
             if resp.headers['location'].startswith('/login.php?'):
@@ -66,9 +59,6 @@ class MAMClient(object):
         elif resp.status_code != 200:
             raise MAMException()
         return resp
-
-    def request(self, url):
-        return self._request(process_url(url), try_login=True)
 
     def download_torrent(self, torrent_url):
         for i in range(3):
@@ -86,6 +76,10 @@ class MAMClient(object):
                 download_exception = ex
         raise download_exception
 
+    def get_torrent(self, torrent_id):
+        return self.request(self.MAM_GET_TORRENT.format(torrent_id))
+
     @staticmethod
     def get():
-        return MAMClient(MAM_USERNAME, MAM_PASSWORD)
+        user = TrackerAccount.get_mam()
+        return MAMClient(user.username, user.password)

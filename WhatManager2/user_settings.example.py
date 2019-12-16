@@ -61,14 +61,6 @@ CELERY_RESULT_BACKEND = 'amqp://guest@localhost//'
 WCD_PTH_SPECTRALS_HTML_PATH = '/path/to/target/folder/with/html/and/pngs'
 
 
-### MYANONAMOUSE SETTINGS
-MAM_USERNAME = 'your mam username'
-MAM_PASSWORD = 'your mam password'
-MAM_ROOT_URL = 'https://www.myanonamouse.net'
-MAM_LOGIN_URL = '/takelogin.php'
-MAM_GET_TORRENT_URL = '/t/{0}'
-
-
 ### PTPIMG SETTINGS
 # You only need these if you are uploading books
 PTPIMG_USERNAME = 'ptpimg username'
