@@ -37,7 +37,6 @@ class TrackerAccount(models.Model):
     ZONE_RED = 'redacted.ch'
     ZONE_BIBLIOTIK = 'bibliotik.me'
     ZONE_MYANONAMOUSE = 'myanonamouse.net'
-    ZONE_PTPIMG = 'ptpimg.me'
 
     ZONES = [
         (ZONE_RED, 'Redacted'),
