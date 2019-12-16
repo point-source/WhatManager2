@@ -174,7 +174,7 @@ class Command(BaseCommand):
                     self.subfolder_move('invalid_torrent', self.torrent_id)
                     continue
                 self.data_path = os.path.join(self.base_dir(), self.torrent_info['info']['name'])
-            print('Checking to see if torrent is already loaded into WM..')
+            print('Checking to see if torrent {} is already loaded into WM..'.format(self.torrent_id))
             masters = list(ReplicaSet.get_what_master().transinstance_set.all())
             try:
                 TransTorrent.objects.get(instance__in=masters, info_hash=self.info_hash)
