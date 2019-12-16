@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
-
-import time
-
-from django.core.management.base import BaseCommand
-
 import requests
+import time
+from django.core.management.base import BaseCommand
 
 from home.models import WhatClient
 from what_transcode.tasks import TranscodeSingleJob
@@ -41,11 +38,15 @@ def report_progress(msg):
 class Command(BaseCommand):
     help = 'Help you create a torrent and add it to WM'
 
+    def add_arguments(self, parser):
+        parser.add_argument('source_dir', help='Source directory for the torrent.')
+
     def handle(self, *args, **options):
-        if len(args) != 1:
+        source_dir = options['source_dir']
+        if not source_dir:
             print('Pass only the source directory.')
             return 1
-        source_dir = args[0]
+
         if source_dir.endswith('/'):
             source_dir = source_dir[:-1]
 
