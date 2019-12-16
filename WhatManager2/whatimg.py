@@ -1,13 +1,15 @@
 import requests
 import json
 
-from WhatManager2 import settings
+from pyquery import pyquery
+from home.models import ResourceAccount
 
 
 def login(session):
+    user = ResourceAccount.get_ptpimg()
     payload = {
-        'email': settings.PTPIMG_USERNAME,
-        'pass': settings.PTPIMG_PASSWORD,
+        'email': user.username,
+        'pass': user.password,
     }
     r = session.post('https://ptpimg.me/login.php', data=payload)
     pq = pyquery.PyQuery(r.text)

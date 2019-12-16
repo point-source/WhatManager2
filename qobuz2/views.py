@@ -11,9 +11,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import last_modified
 
 from WhatManager2.management.commands import import_external_what_torrent
-from WhatManager2.settings import PTPIMG_USERNAME, PTPIMG_PASSWORD
 from home.info_holder import RED_RELEASE_TYPES
-from home.models import RedClient, RequestException, TrackerAccount, WhatTorrent
+from home.models import RedClient, RequestException, ResourceAccount, TrackerAccount, WhatTorrent
 from qiller.upload import QillerUpload
 from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
@@ -160,7 +159,8 @@ def upload_cover(request, upload_id):
 
 
 def do_upload_cover(upload, temp_dir, qiller):
-    qiller.upload_cover(temp_dir, PTPIMG_USERNAME, PTPIMG_PASSWORD,
+    user = ResourceAccount.get_ptpimg()
+    qiller.upload_cover(temp_dir, user.username, user.password,
                         PTPIMG_QOBUZ_ALBUM_ID)
     upload.set_upload(qiller)
     upload.save()

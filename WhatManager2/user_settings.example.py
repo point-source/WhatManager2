@@ -61,12 +61,6 @@ CELERY_RESULT_BACKEND = 'amqp://guest@localhost//'
 WCD_PTH_SPECTRALS_HTML_PATH = '/path/to/target/folder/with/html/and/pngs'
 
 
-### PTPIMG SETTINGS
-# You only need these if you are uploading books
-PTPIMG_USERNAME = 'ptpimg username'
-PTPIMG_PASSWORD = 'ptpimg password'
-
-
 ### QOBUZ / TIDAL SETTINGS
 QOBUZ_USERNAME = 'd568138@gmail.com'
 QOBUZ_PASSWORD = 'd568138@gmail.com'

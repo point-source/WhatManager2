@@ -37,13 +37,11 @@ class TrackerAccount(models.Model):
     ZONE_RED = 'redacted.ch'
     ZONE_BIBLIOTIK = 'bibliotik.me'
     ZONE_MYANONAMOUSE = 'myanonamouse.net'
-    ZONE_PTPIMG = 'ptpimg.me'
 
     ZONES = [
         (ZONE_RED, 'Redacted'),
         (ZONE_BIBLIOTIK, 'Bibliotik'),
         (ZONE_MYANONAMOUSE, 'MyAnonaMouse'),
-        (ZONE_PTPIMG, 'PTPIMG'),
     ]
 
     zone = models.CharField(choices=ZONES, max_length=20)
@@ -71,6 +69,38 @@ class TrackerAccount(models.Model):
     @classmethod
     def get_mam(cls):
         return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_MYANONAMOUSE)
+
+
+class ResourceAccount(models.Model):
+    SITES = [
+        ('PI', 'PTPIMG'),
+        ('TI', 'Tidal'),
+        ('QO', 'Qobuz'),
+    ]
+
+    site = models.CharField(choices=SITES, max_length=2)
+    username = models.CharField(max_length=40, blank=True, null=True)
+    password = models.CharField(max_length=256, blank=True, null=True)
+    session_id = models.CharField(max_length=256, blank=True, null=True)
+    preferred = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} Account ({}){}'.format([
+            s for s in self.SITES if s[0] == self.site][0][1], \
+            self.username, ' [Preferred]' if self.preferred else '')
+
+    @classmethod
+    def get_ptpimg(cls):
+        ResourceAccount.objects.get(site='PI')
+
+    @classmethod
+    def get_tidal(cls):
+        ResourceAccount.objects.get(site='TI')
+
+    @classmethod
+    def get_qobuz(cls):
+        ResourceAccount.objects.get(site='QO')
+
 
 class ReplicaSet(models.Model):
     zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
@@ -665,10 +695,10 @@ class RedClient(WhatAPI):
             super().__init__(cookies=pickle.loads(self.login_cache.cookies),
                             server=self.RED_URL)
         except:
-            super().__init__(username=self.user.username, 
+            super().__init__(username=self.user.username,
                             password=self.user.password,
                             server=self.RED_URL)
-            
+
 
     def _login(self):
         super()._login()
@@ -677,7 +707,7 @@ class RedClient(WhatAPI):
         self.login_cache.authkey = self.authkey
         self.login_cache.passkey = self.passkey
         self.login_cache.save()
-    
+
     def clear_login_cache(self):
         WhatLoginCache.objects.all().delete()
 
