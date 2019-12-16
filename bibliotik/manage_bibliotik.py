@@ -7,7 +7,7 @@ from django.db import transaction
 from WhatManager2.locking import LockModelTables
 from WhatManager2.utils import norm_t_torrent
 from bibliotik.models import BibliotikTorrent, BibliotikTransTorrent
-from home.models import ReplicaSet, DownloadLocation, TorrentAlreadyAddedException, TransInstance
+from home.models import ReplicaSet, TorrentAlreadyAddedException, TransInstance
 
 
 def add_bibliotik_torrent(torrent_id, instance=None, location=None, bibliotik_client=None,
@@ -17,7 +17,7 @@ def add_bibliotik_torrent(torrent_id, instance=None, location=None, bibliotik_cl
     if not instance:
         instance = ReplicaSet.get_bibliotik_master().get_preferred_instance()
     if not location:
-        location = DownloadLocation.get_bibliotik_preferred()
+        location = TrackerAccount.get_bib().download_location
 
     with LockModelTables(BibliotikTransTorrent, TransInstance):
         try:

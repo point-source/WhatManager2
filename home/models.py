@@ -55,7 +55,7 @@ class TrackerAccount(models.Model):
     snapshot_interval = models.IntegerField(default=600)
     min_ratio = models.DecimalField(max_digits=4, decimal_places=2, default=1.3)
     sync_files = models.BooleanField(default=False)
-    download_location = models.ForeignKey('DownloadLocation', on_delete=models.CASCADE)
+    download_location = models.OneToOneField('DownloadLocation', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return '{} Account ({})'.format([z for z in self.ZONES if z[0] == self.zone][0][1], self.username)
@@ -67,6 +67,10 @@ class TrackerAccount(models.Model):
     @classmethod
     def get_bib(cls):
         return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_BIBLIOTIK)
+
+    @classmethod
+    def get_mam(cls):
+        return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_MYANONAMOUSE)
 
 class ReplicaSet(models.Model):
     zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
@@ -104,13 +108,10 @@ class ReplicaSet(models.Model):
 
 
 class DownloadLocation(models.Model):
-    zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
     path = models.TextField()
-    preferred = models.BooleanField(default=False)
 
     def __str__(self):
-        return 'DownloadLocation({0}, {1}{2})'.format(
-            self.zone, self.path, ', preferred' if self.preferred else '')
+        return 'DownloadLocation({0}, {1})'.format(self.zone, self.path)
 
     @cached_property
     def disk_space(self):
@@ -124,6 +125,13 @@ class DownloadLocation(models.Model):
     @cached_property
     def free_space_percent(self):
         return float(self.disk_space['free']) / self.disk_space['total']
+
+    @cached_property
+    def zone(self):
+        try:
+            return self.trackeraccount.zone
+        except TrackerAccount.DoesNotExist as e:
+            return 'zoneless'
 
     @classmethod
     def get_bibliotik_preferred(cls):
@@ -620,14 +628,6 @@ class WhatFileMetadataCache(models.Model):
                 for cache_line in dirty_cache_lines:
                     cache_line.save()
         return result
-
-
-headers = {
-    'Content-type': 'application/x-www-form-urlencoded',
-    'Accept-Charset': 'utf-8',
-    'User-Agent': 'whatapi [isaaczafuta]',
-    'Authorization': settings.RED_API_KEY,
-}
 
 
 class LoginException(Exception):
