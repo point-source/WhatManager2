@@ -12,7 +12,7 @@ from django import db
 from django.utils.functional import cached_property
 from numpy import random
 
-from WhatManager2.settings import RED_ANNOUNCE, RED_UPLOAD_URL, TRANSCODER_ADD_TORRENT_URL, \
+from WhatManager2.settings import RED_ANNOUNCE, TRANSCODER_ADD_TORRENT_URL, \
     TRANSCODER_HTTP_USERNAME, TRANSCODER_HTTP_PASSWORD, TRANSCODER_TEMP_DIR, \
     TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
 from WhatManager2.utils import get_artists

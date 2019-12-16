@@ -3,7 +3,6 @@ import os.path
 import shutil
 
 from WhatManager2 import manage_torrent
-from WhatManager2.settings import RED_UPLOAD_URL
 from home.models import RedClient, DownloadLocation, ReplicaSet, WhatTorrent
 from what_transcode.utils import safe_retrieve_new_torrent, get_info_hash_from_data
 
