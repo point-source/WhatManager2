@@ -5,9 +5,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from WhatManager2 import manage_torrent, settings
-from WhatManager2.settings import SYNC_SYNCS_FILES
-from home.models import WhatTorrent, DownloadLocation, TransTorrent, LogEntry, ReplicaSet, \
-    WhatFulltext, RedClient
+from home.models import DownloadLocation, LogEntry, RedClient, ReplicaSet, TrackerAccount, TransTorrent, WhatFulltext, WhatTorrent
 from what_profile.models import WhatUserSnapshot
 
 
@@ -30,6 +28,7 @@ def sync_fulltext():
 
 
 def sync_instance_db(request, instance):
+    user = TrackerAccount.get_red()
     m_torrents = instance.get_m_torrents_by_hash()
     t_torrents = instance.get_t_torrents_by_hash(TransTorrent.sync_t_arguments)
 
@@ -69,7 +68,7 @@ def sync_instance_db(request, instance):
 
             m_torrent = m_torrents[hash]
             m_torrent.sync_t_torrent(t_torrent)
-            if (SYNC_SYNCS_FILES or 'sync_files' in request.GET) and instance.replica_set.is_master:
+            if (user.sync_files or 'sync_files' in request.GET) and instance.replica_set.is_master:
                 m_torrent.sync_files()
 
 
@@ -104,19 +103,18 @@ def sync_replica_set(master, slave):
 
 
 def sync_all_replicas_to_master():
-    for replica_set in ReplicaSet.objects.filter(zone=ReplicaSet.ZONE_WHAT):
+    for replica_set in ReplicaSet.objects.filter(zone=TrackerAccount.ZONE_RED):
         if not replica_set.is_master:
             sync_replica_set(ReplicaSet.get_what_master(), replica_set)
 
 
 def sync_profile(request):
-    user_id = settings.RED_USER_ID
-    interval = settings.RED_PROFILE_SNAPSHOT_INTERVAL
+    user = TrackerAccount.get_red()
     try:
         last_snap = WhatUserSnapshot.get_last()
-        if (timezone.now() - last_snap.datetime).total_seconds() < interval - 30:
+        if (timezone.now() - last_snap.datetime).total_seconds() < user.snapshot_interval - 30:
             return
     except WhatUserSnapshot.DoesNotExist:
         pass
     what = RedClient()
-    WhatUserSnapshot.get(what, user_id).save()
+    WhatUserSnapshot.get(what, user.user_id).save()

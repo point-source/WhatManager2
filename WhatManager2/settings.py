@@ -2,6 +2,9 @@ import os
 
 from WhatManager2.user_settings import *
 
+# What part of your disk is guaranteed left empty by WM
+MIN_FREE_DISK_SPACE = 0.10
+
 # Used permissions
 # home_view_logentry - Viewing logs
 # home_add_whattorrent - Adding torrents

@@ -8,7 +8,7 @@ import bencode
 from django.core.management.base import BaseCommand
 
 from WhatManager2 import manage_torrent
-from home.models import WhatTorrent, DownloadLocation, ReplicaSet, TransTorrent
+from home.models import DownloadLocation, ReplicaSet, TrackerAccount, TransTorrent, WhatTorrent
 from what_transcode.utils import get_info_hash
 
 
@@ -37,7 +37,7 @@ class Command(BaseCommand):
         super(Command, self).__init__()
         self.pseudo_request = lambda: None
         self.trans_instance = ReplicaSet.get_what_master().get_preferred_instance()
-        self.download_location = DownloadLocation.get_what_preferred()
+        self.download_location = TrackerAccount.get_red().download_location
         self.data_path = None
         self.torrent_path = None
         self.torrent_info = None

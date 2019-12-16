@@ -6,15 +6,12 @@ from html.parser import HTMLParser
 from base64 import b64decode
 
 import bencode
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from html2bbcode.parser import HTML2BBCode
 
 from WhatManager2.manage_torrent import add_torrent
 from books.utils import call_mktorrent
-from home.models import ReplicaSet, RedClient, DownloadLocation, WhatTorrent, \
-    RequestException, \
-    BadIdException
+from home.models import BadIdException, DownloadLocation, RedClient, ReplicaSet, RequestException, TrackerAccount, WhatTorrent
 from wcd_pth_migration import torrentcheck
 from wcd_pth_migration.logfile import LogFile, UnrecognizedRippingLogException, \
     InvalidRippingLogException
@@ -65,6 +62,7 @@ class TorrentMigrationJob(object):
     REAL_RUN = True
 
     def __init__(self, what, location_mapping, data, flac_only):
+        self.user = TrackerAccount.get_red()
         self.flac_only = flac_only
         self.what = what
         self.location_mapping = location_mapping
@@ -133,7 +131,7 @@ class TorrentMigrationJob(object):
             pass
         call_mktorrent(self.torrent_dir_path,
                        torrent_temp_filename,
-                       settings.RED_ANNOUNCE,
+                       self.user.announce_url,
                        self.torrent_new_name)
         with open(torrent_temp_filename, 'rb') as torrent_file:
             self.torrent_file_new_data = pthify_torrent(torrent_file.read())

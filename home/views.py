@@ -50,7 +50,7 @@ def add_all(request):
                 raise Exception('Duplcate what_id in transmission')
             what_ids.add(m_torrent.what_torrent_id)
     dest_dir = request.GET['path']
-    if dest_dir not in [p.path for p in DownloadLocation.objects.filter(zone=ReplicaSet.ZONE_WHAT)]:
+    if dest_dir not in [p.path for p in DownloadLocation.objects.filter(zone=TrackerAccount.ZONE_RED)]:
         raise Exception('Path not allowed')
     dest_dir_ids = {int(i) for i in os.listdir(dest_dir)}
     return {

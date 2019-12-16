@@ -5,16 +5,17 @@ from django.db.models.aggregates import Sum
 from django.shortcuts import render
 
 from WhatManager2 import manage_torrent
-from WhatManager2.settings import MIN_FREE_DISK_SPACE, MIN_RED_RATIO
+from WhatManager2.settings import MIN_FREE_DISK_SPACE
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method, html_unescape, get_artists
-from home.models import DownloadLocation, LogEntry, ReplicaSet, WhatTorrent, RedClient
+from home.models import DownloadLocation, LogEntry, RedClient, ReplicaSet, TrackerAccount, WhatTorrent
 from what_queue.models import QueueItem, filter_group, filter_torrent, is_existing
 from what_profile.models import WhatUserSnapshot
 
 
 def get_auto_pop_ratio_delta(snapshot):
-    return snapshot.uploaded / MIN_RED_RATIO - snapshot.downloaded
+    user = TrackerAccount.get_red()
+    return snapshot.uploaded / user.min_ratio - snapshot.downloaded
 
 
 @login_required
@@ -69,7 +70,7 @@ def auto_pop(request):
 @permission_required('what_queue.add_queueitem', raise_exception=True)
 @json_return_method
 def do_pop(request):
-    download_location = DownloadLocation.get_what_preferred()
+    download_location = TrackerAccount.get_red().download_location
     if download_location.free_space_percent < MIN_FREE_DISK_SPACE:
         LogEntry.add(request.user, 'error', 'Failed to add torrent. Not enough disk space.')
         return {

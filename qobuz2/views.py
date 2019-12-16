@@ -11,9 +11,9 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import last_modified
 
 from WhatManager2.management.commands import import_external_what_torrent
-from WhatManager2.settings import RED_ANNOUNCE, PTPIMG_USERNAME, PTPIMG_PASSWORD
+from WhatManager2.settings import PTPIMG_USERNAME, PTPIMG_PASSWORD
 from home.info_holder import RED_RELEASE_TYPES
-from home.models import RequestException, WhatTorrent, RedClient
+from home.models import RedClient, RequestException, TrackerAccount, WhatTorrent
 from qiller.upload import QillerUpload
 from qiller.what_upload import MissingImageException
 from qobuz2 import tasks
@@ -342,9 +342,10 @@ def prepare(request, upload_id):
 @atomic
 @login_required
 def make_torrent(request, upload_id):
+    user = TrackerAccount.get_red()
     qobuz_upload = QobuzUpload.objects.get(id=upload_id)
     qiller = qobuz_upload.upload
-    qiller.make_torrent(get_temp_dir(qiller.metadata.id), RED_ANNOUNCE)
+    qiller.make_torrent(get_temp_dir(qiller.metadata.id), user.announce_url)
     qobuz_upload.set_upload(qiller)
     qobuz_upload.save()
     return redirect('qobuz2:edit_upload', upload_id)

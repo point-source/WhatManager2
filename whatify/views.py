@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from WhatManager2.manage_torrent import add_torrent
 from WhatManager2.utils import json_return_method
-from home.models import RedClient, ReplicaSet, DownloadLocation
+from home.models import DownloadLocation, RedClient, ReplicaSet, TrackerAccount
 from what_meta.models import WhatTorrentGroup, WhatArtist, WhatMetaFulltext
 from what_transcode.utils import html_unescape
 from whatify.response_gen import get_torrent_group_dict, get_torrent_groups_have, \
@@ -79,7 +79,7 @@ def download_torrent_group(request, group_id):
     ids = get_ids_to_download(torrent_group)
     try:
         instance = ReplicaSet.get_what_master().get_preferred_instance()
-        download_location = DownloadLocation.get_what_preferred()
+        download_location = TrackerAccount.get_red().download_location
         for torrent_id in ids:
             add_torrent(request, instance, download_location, torrent_id)
     except Exception as ex:

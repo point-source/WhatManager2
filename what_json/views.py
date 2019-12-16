@@ -15,8 +15,7 @@ from WhatManager2 import manage_torrent, trans_sync
 from WhatManager2.settings import MIN_FREE_DISK_SPACE
 from WhatManager2.templatetags.custom_filters import filesizeformat
 from WhatManager2.utils import json_return_method
-from home.models import ReplicaSet, LogEntry, TransTorrent, TorrentAlreadyAddedException, \
-    WhatTorrent, DownloadLocation, TransInstance, RedClient
+from home.models import DownloadLocation, LogEntry, RedClient, ReplicaSet, TorrentAlreadyAddedException, TrackerAccount, TransInstance, TransTorrent, WhatTorrent
 from what_json import utils
 
 
@@ -147,11 +146,11 @@ def add_torrent(request):
     try:
         if 'dir' in request.POST:
             download_location = DownloadLocation.objects.get(
-                zone=ReplicaSet.ZONE_WHAT,
+                zone=TrackerAccount.ZONE_RED,
                 path=request.POST['dir']
             )
         else:
-            download_location = DownloadLocation.get_what_preferred()
+            download_location = TrackerAccount.get_red().download_location
     except DownloadLocation.DoesNotExist:
         return {
             'success': False,
@@ -247,7 +246,7 @@ def run_load_balance(request):
 @json_return_method
 def move_torrent_to_location(request):
     what_id = int(request.GET['id'])
-    new_location = DownloadLocation.objects.get(zone=ReplicaSet.ZONE_WHAT, path=request.GET['path'])
+    new_location = DownloadLocation.objects.get(zone=TrackerAccount.ZONE_RED, path=request.GET['path'])
     what_torrent = WhatTorrent.objects.get(id=what_id)
     trans_torrent = TransTorrent.objects.get(
         instance__in=ReplicaSet.get_what_master().transinstance_set.all(),

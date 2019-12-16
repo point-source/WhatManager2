@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 from django.db.utils import OperationalError
 
 from WhatManager2 import manage_torrent
-from home.models import WhatTorrent, DownloadLocation, ReplicaSet, TransTorrent, RequestException
+from home.models import DownloadLocation, ReplicaSet, RequestException, TrackerAccount, TransTorrent, WhatTorrent
 from what_transcode.utils import get_info_hash
 
 def safe_makedirs(p):
@@ -38,7 +38,7 @@ class Command(BaseCommand):
         super(Command, self).__init__()
         self.pseudo_request = lambda: None
         self.trans_instance = None
-        self.download_location = DownloadLocation.get_what_preferred()
+        self.download_location = TrackerAccount.get_red().download_location
         self.data_path = None # folder containing files listed in torrent file
         self.torrent_info = None # torrent data
         self.torrent_id = None # torrent ID

@@ -17,7 +17,7 @@ class Command(BaseCommand):
                 checked = json.loads(f.read())
         except IOError:
             pass
-        for dl in DownloadLocation.objects.filter(zone=ReplicaSet.ZONE_WHAT):
+        for dl in DownloadLocation.objects.filter(zone=TrackerAccount.ZONE_RED):
             for torrent in os.listdir(dl.path):
                 if torrent in checked:
                     print('Already checked', torrent, 'skipping...')

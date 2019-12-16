@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 import WhatManager2.settings
-from home import models
+from home.models import ReplicaSet, TrackerAccount, TransInstance
 from WhatManager2.settings import (TRANSMISSION_BIND_HOST,
                                    TRANSMISSION_FILES_ROOT,
                                    TRANSMISSION_PASSWORD)
@@ -356,11 +356,11 @@ def ensure_root():
 
 def ensure_replica_set_exists(zone):
     try:
-        models.ReplicaSet.objects.get(zone=zone)
-    except models.ReplicaSet.DoesNotExist:
+        ReplicaSet.objects.get(zone=zone)
+    except ReplicaSet.DoesNotExist:
         print('There is no replica set with the name {0}. I will create one.'.format(zone))
         confirm()
-        replica_set = models.ReplicaSet(
+        replica_set = ReplicaSet(
             zone=zone,
             name='master',
         )
@@ -368,9 +368,9 @@ def ensure_replica_set_exists(zone):
 
 
 def ensure_replica_sets_exist():
-    ensure_replica_set_exists(models.ReplicaSet.ZONE_WHAT)
-    ensure_replica_set_exists(models.ReplicaSet.ZONE_BIBLIOTIK)
-    ensure_replica_set_exists(models.ReplicaSet.ZONE_MYANONAMOUSE)
+    ensure_replica_set_exists(TrackerAccount.ZONE_RED)
+    ensure_replica_set_exists(TrackerAccount.ZONE_BIBLIOTIK)
+    ensure_replica_set_exists(TrackerAccount.ZONE_MYANONAMOUSE)
 
 
 # TODO: Implement it in a non-ugly way!
@@ -400,27 +400,27 @@ class Command(BaseCommand):
         ensure_root()
         ensure_replica_sets_exist()
         if options['zone'] is None:
-            for instance in models.TransInstance.objects.order_by('name'):
+            for instance in TransInstance.objects.order_by('name'):
                 manager = TransInstanceManager(instance)
                 manager.sync()
         else:
-            replica_set = models.ReplicaSet.objects.get(zone=options['zone'])
+            replica_set = ReplicaSet.objects.get(zone=options['zone'])
             old_instances = replica_set.transinstance_set.order_by('-port').all()
             if len(old_instances):
                 old_instance = old_instances[0]
             else:
-                if replica_set.zone == models.ReplicaSet.ZONE_WHAT:
+                if replica_set.zone == TrackerAccount.ZONE_RED:
                     zero_port = 9090
                     zero_peer_port = 21412
-                elif replica_set.zone == models.ReplicaSet.ZONE_BIBLIOTIK:
+                elif replica_set.zone == TrackerAccount.ZONE_BIBLIOTIK:
                     zero_port = 10090
                     zero_peer_port = 22412
-                elif replica_set.zone == models.ReplicaSet.ZONE_MYANONAMOUSE:
+                elif replica_set.zone == TrackerAccount.ZONE_MYANONAMOUSE:
                     zero_port = 11090
                     zero_peer_port = 23412
                 else:
                     raise Exception('Unknown zone')
-                old_instance = models.TransInstance(
+                old_instance = TransInstance(
                     replica_set=replica_set,
                     name='{0}00'.format(replica_set.zone
                                         .replace('.cd', '')
@@ -434,7 +434,7 @@ class Command(BaseCommand):
                     username='transmission',
                     password=TRANSMISSION_PASSWORD,
                 )
-            new_instance = models.TransInstance(
+            new_instance = TransInstance(
                 replica_set=old_instance.replica_set,
                 name='{0}{1:02}'.format(old_instance.name[:-2], int(old_instance.name[-2:]) + 1),
                 host=old_instance.host,

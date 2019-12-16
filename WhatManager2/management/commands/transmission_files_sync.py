@@ -88,7 +88,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             self.download_locations = list(DownloadLocation.objects.filter(
-                zone=ReplicaSet.ZONE_BIBLIOTIK))
+                zone=TrackerAccount.ZONE_BIBLIOTIK))
             self.files_sync()
         except Exception as ex:
             with open('/files_sync_error.txt', 'w') as f:
@@ -120,7 +120,7 @@ class Command(BaseCommand):
 
         new_torrents = {}
         print('Iterating locations...')
-        for location in DownloadLocation.objects.filter(zone=ReplicaSet.ZONE_BIBLIOTIK):
+        for location in DownloadLocation.objects.filter(zone=TrackerAccount.ZONE_BIBLIOTIK):
             for i in os.listdir(location.path):
                 torrent_id = int(i)
                 if torrent_id not in current_torrents:

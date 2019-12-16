@@ -12,12 +12,12 @@ from django import db
 from django.utils.functional import cached_property
 from numpy import random
 
-from WhatManager2.settings import RED_ANNOUNCE, TRANSCODER_ADD_TORRENT_URL, \
+from WhatManager2.settings import TRANSCODER_ADD_TORRENT_URL, TRANSCODER_FORMATS, \
     TRANSCODER_HTTP_USERNAME, TRANSCODER_HTTP_PASSWORD, TRANSCODER_TEMP_DIR, \
-    TRANSCODER_ERROR_OUTPUT, TRANSCODER_FORMATS
+    TRANSCODER_ERROR_OUTPUT
 from WhatManager2.utils import get_artists
 from WhatManager2 import manage_torrent
-from home.models import RedClient, DownloadLocation, ReplicaSet
+from home.models import DownloadLocation, RedClient, ReplicaSet, TrackerAccount
 from what_transcode.flac_lame import transcode_file
 from what_transcode.utils import torrent_is_preemphasized, get_info_hash, html_unescape, \
     fix_pathname, norm_dest_path, get_channels_number, recursive_chmod, \
@@ -35,7 +35,7 @@ def get_source_roots():
     global source_roots
     if source_roots is not None:
         return source_roots
-    source_roots = [l.path for l in DownloadLocation.objects.filter(zone=ReplicaSet.ZONE_WHAT)]
+    source_roots = [l.path for l in DownloadLocation.objects.filter(zone=TrackerAccount.ZONE_RED)]
     db.connection.close()
     return source_roots
 
@@ -44,7 +44,7 @@ def get_dest_upload_dir():
     global dest_upload_dir
     if dest_upload_dir is not None:
         return dest_upload_dir
-    dest_upload_dir = DownloadLocation.get_what_preferred()
+    dest_upload_dir = TrackerAccount.get_red().download_location
     db.connection.close()
     return dest_upload_dir
 
@@ -52,6 +52,7 @@ def get_dest_upload_dir():
 class TranscodeSingleJob(object):
     def __init__(self, what, what_torrent, report_progress, source_dir, bitrate,
                  torrent_temp_dir=None, transcoder_temp_dir=None):
+        self.user = TrackerAccount.get_red()
         self.what = what
         self.force_warnings = False
         self.what_torrent = what_torrent
@@ -70,7 +71,7 @@ class TranscodeSingleJob(object):
     def create_torrent(self):
         print('Creating .torrent file...')
         args = [
-            '-a', RED_ANNOUNCE,
+            '-a', self.user.announce_url,
             '-p',
             '-o', self.torrent_file_path,
             self.torrent_temp_dir,

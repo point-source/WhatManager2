@@ -96,8 +96,8 @@ class ReplicaSetTests(TestCase):
 
     def test_get_master(self):
         what_master = ReplicaSet.get_what_master()
-        self.assertEqual(what_master.zone, ReplicaSet.ZONE_WHAT)
+        self.assertEqual(what_master.zone, TrackerAccount.ZONE_RED)
         self.assertEqual(what_master.name, 'master')
         bib_master = ReplicaSet.get_bibliotik_master()
-        self.assertEqual(bib_master.zone, ReplicaSet.ZONE_BIBLIOTIK)
+        self.assertEqual(bib_master.zone, TrackerAccount.ZONE_BIBLIOTIK)
         self.assertEqual(bib_master.name, 'master')

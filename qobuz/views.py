@@ -15,7 +15,7 @@ import requests
 from requests.exceptions import RequestException
 
 from WhatManager2 import whatimg
-from home.models import DownloadLocation, WhatTorrent
+from home.models import DownloadLocation, TrackerAccount, WhatTorrent
 from qobuz import tasks
 from qobuz.api import get_qobuz_client
 from qobuz.models import NewUploadForm, QobuzUpload, EditUploadForm
@@ -140,7 +140,7 @@ def add_to_wm_transcode(what_id):
 @login_required
 def start_seeding(request, upload_id):
     qobuz_upload = QobuzUpload.objects.get(id=upload_id)
-    dest_upload_dir = DownloadLocation.get_what_preferred().path
+    dest_upload_dir = TrackerAccount.get_red().download_location.path
     torrent_file_path = os.path.join(qobuz_upload.temp_media_path,
                                      qobuz_upload.torrent_name + '.torrent')
     info_hash = get_info_hash(torrent_file_path)

@@ -13,8 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from WhatManager2.manage_torrent import add_torrent
 from WhatManager2.settings import TRANSCODER_FORMATS
 from WhatManager2.utils import json_return_method
-from home.models import WhatTorrent, TransTorrent, ReplicaSet, DownloadLocation, LogEntry, \
-    RedClient
+from home.models import DownloadLocation, LogEntry, RedClient, ReplicaSet, TrackerAccount, TransTorrent, WhatTorrent
 from what_transcode.tasks import transcode
 from what_transcode.models import TranscodeRequest
 from what_transcode.utils import get_trans_torrent, torrent_is_preemphasized, get_mp3_ids
@@ -234,7 +233,7 @@ def run_request_transcode(request, what_id):
             get_trans_torrent(what_torrent)
         except TransTorrent.DoesNotExist:
             instance = ReplicaSet.get_what_master().get_preferred_instance()
-            download_location = DownloadLocation.get_what_preferred()
+            download_location = TrackerAccount.get_red().download_location
             m_torrent = add_torrent(request, instance, download_location, what_id)
             if request.user.is_authenticated:
                 m_torrent.what_torrent.added_by = request.user

@@ -57,23 +57,6 @@ CELERY_RESULT_BACKEND = 'amqp://guest@localhost//'
 
 
 ### REDACTED SETTINGS
-RED_USER_ID = 123456
-RED_USERNAME = 'your RED username'
-RED_PASSWORD = 'your RED password'
-RED_API_KEY = 'your RED api key'
-# How frequently your profile will be stored, in seconds
-RED_PROFILE_SNAPSHOT_INTERVAL = 10 * 60
-# What part of your disk is guaranteed left empty by WM
-MIN_FREE_DISK_SPACE = 0.10
-# Under what ratio queued torrents won't be downloaded.
-MIN_RED_RATIO = 1.3
-# Whether the frequent sync will make sure ReleaseInfo is there. Leave False.
-SYNC_SYNCS_FILES = False
-# You might set this to ssl.redacted.ch if RED has a long downtime, but ssl is up.
-RED_CD_DOMAIN = 'redacted.ch'
-RED_UPLOAD_URL = 'https://{0}/upload.php'.format(RED_CD_DOMAIN)
-# Only for uploading
-RED_ANNOUNCE = 'http://flacsfor.me/SET THIS TO YOUR ANNOUNCE/announce'
 # Only if you're going to run wcd_pth_migration
 WCD_PTH_SPECTRALS_HTML_PATH = '/path/to/target/folder/with/html/and/pngs'
 

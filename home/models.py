@@ -33,12 +33,39 @@ class TorrentAlreadyAddedException(Exception):
     pass
 
 
-class ReplicaSet(models.Model):
-    ZONE_WHAT = 'redacted.ch'
+class TrackerAccount(models.Model):
+    ZONE_RED = 'redacted.ch'
     ZONE_BIBLIOTIK = 'bibliotik.me'
     ZONE_MYANONAMOUSE = 'myanonamouse.net'
+    ZONE_PTPIMG = 'ptpimg.me'
 
-    zone = models.CharField(max_length=32)
+    ZONES = [
+        (ZONE_RED, 'Redacted'),
+        (ZONE_BIBLIOTIK, 'Bibliotik'),
+        (ZONE_MYANONAMOUSE, 'MyAnonaMouse'),
+        (ZONE_PTPIMG, 'PTPIMG'),
+    ]
+
+    zone = models.CharField(choices=ZONES, max_length=20)
+    user_id = models.IntegerField(blank=True, null=True)
+    username = models.CharField(max_length=40, blank=True, null=True)
+    password = models.CharField(max_length=256, blank=True, null=True)
+    api_key = models.CharField(max_length=256, blank=True, null=True)
+    announce_url = models.URLField(blank=True, null=True)
+    snapshot_interval = models.IntegerField(default=600)
+    min_ratio = models.DecimalField(max_digits=4, decimal_places=2, default=1.3)
+    sync_files = models.BooleanField(default=False)
+    download_location = models.ForeignKey('DownloadLocation', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} Account ({})'.format([z for z in self.ZONES if z[0] == self.zone][0][1], self.username)
+
+    @classmethod
+    def get_red(cls):
+        return TrackerAccount.objects.get(zone=TrackerAccount.ZONE_RED)
+
+class ReplicaSet(models.Model):
+    zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
     name = models.TextField()
 
     def __str__(self):
@@ -61,19 +88,19 @@ class ReplicaSet(models.Model):
 
     @classmethod
     def get_what_master(cls):
-        return cls.objects.get(zone=cls.ZONE_WHAT, name='master')
+        return cls.objects.get(zone=TrackerAccount.ZONE_RED, name='master')
 
     @classmethod
     def get_bibliotik_master(cls):
-        return cls.objects.get(zone=cls.ZONE_BIBLIOTIK, name='master')
+        return cls.objects.get(zone=TrackerAccount.ZONE_BIBLIOTIK, name='master')
 
     @classmethod
     def get_myanonamouse_master(cls):
-        return cls.objects.get(zone=cls.ZONE_MYANONAMOUSE, name='master')
+        return cls.objects.get(zone=TrackerAccount.ZONE_MYANONAMOUSE, name='master')
 
 
 class DownloadLocation(models.Model):
-    zone = models.CharField(max_length=32)
+    zone = models.CharField(choices=TrackerAccount.ZONES, max_length=32)
     path = models.TextField()
     preferred = models.BooleanField(default=False)
 
@@ -95,23 +122,16 @@ class DownloadLocation(models.Model):
         return float(self.disk_space['free']) / self.disk_space['total']
 
     @classmethod
-    def get_what_preferred(cls):
-        return DownloadLocation.objects.get(
-            zone=ReplicaSet.ZONE_WHAT,
-            preferred=True,
-        )
-
-    @classmethod
     def get_bibliotik_preferred(cls):
         return DownloadLocation.objects.get(
-            zone=ReplicaSet.ZONE_BIBLIOTIK,
+            zone=TrackerAccount.ZONE_BIBLIOTIK,
             preferred=True,
         )
 
     @classmethod
     def get_myanonamouse_preferred(cls):
         return DownloadLocation.objects.get(
-            zone=ReplicaSet.ZONE_MYANONAMOUSE,
+            zone=TrackerAccount.ZONE_MYANONAMOUSE,
             preferred=True,
         )
 
@@ -166,16 +186,16 @@ class TransInstance(models.Model):
 
     @property
     def torrent_count(self):
-        if self.replica_set.zone == ReplicaSet.ZONE_WHAT:
+        if self.replica_set.zone == TrackerAccount.ZONE_RED:
             return self.transtorrent_set.count()
-        elif self.replica_set.zone == ReplicaSet.ZONE_BIBLIOTIK:
+        elif self.replica_set.zone == TrackerAccount.ZONE_BIBLIOTIK:
             return self.bibliotiktranstorrent_set.count()
 
     @property
     def torrents_size(self):
-        if self.replica_set.zone == ReplicaSet.ZONE_WHAT:
+        if self.replica_set.zone == TrackerAccount.ZONE_RED:
             return self.transtorrent_set.aggregate(Sum('torrent_size'))['torrent_size__sum']
-        elif self.replica_set.zone == ReplicaSet.ZONE_BIBLIOTIK:
+        elif self.replica_set.zone == TrackerAccount.ZONE_BIBLIOTIK:
             return self.bibliotiktranstorrent_set.aggregate(
                 Sum('torrent_size'))['torrent_size__sum']
 
@@ -634,14 +654,15 @@ class RedClient(WhatAPI):
     def __init__(self):
         self.RED_URL = 'https://redacted.ch'
         self.RED_UPLOAD = self.RED_URL + '/upload.php'
+        self.user = TrackerAccount.get_red()
 
         try:
             self.login_cache = WhatLoginCache.objects.get()
             super().__init__(cookies=pickle.loads(self.login_cache.cookies),
                             server=self.RED_URL)
         except:
-            super().__init__(username=settings.RED_USERNAME, 
-                            password=settings.RED_PASSWORD,
+            super().__init__(username=self.user.username, 
+                            password=self.user.password,
                             server=self.RED_URL)
             
 

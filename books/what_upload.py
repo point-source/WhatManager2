@@ -3,7 +3,7 @@ import os.path
 import shutil
 
 from WhatManager2 import manage_torrent
-from home.models import RedClient, DownloadLocation, ReplicaSet, WhatTorrent
+from home.models import RedClient, DownloadLocation, ReplicaSet, WhatTorrent, TrackerAccount
 from what_transcode.utils import safe_retrieve_new_torrent, get_info_hash_from_data
 
 
@@ -34,7 +34,7 @@ def get_what_desc(book_upload):
 
 
 def move_to_dest_add(request, book_upload):
-    location = DownloadLocation.get_what_preferred()
+    location = TrackerAccount.get_red().download_location
     dest_path = os.path.join(location.path, str(book_upload.what_torrent_id))
     book_path = os.path.join(dest_path, book_upload.target_filename)
     if not os.path.exists(dest_path):
