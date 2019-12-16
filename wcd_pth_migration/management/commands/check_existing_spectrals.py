@@ -3,7 +3,7 @@ import os
 
 from django.core.management.base import BaseCommand
 
-from home.models import ReplicaSet, DownloadLocation
+from home.models import DownloadLocation, ReplicaSet, TrackerAccount
 from wcd_pth_migration.utils import generate_spectrals_for_dir
 
 

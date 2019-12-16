@@ -12,7 +12,7 @@ import requests
 from WhatManager2.settings import FILES_SYNC_HTTP_USERNAME, FILES_SYNC_HTTP_PASSWORD, \
     FILES_SYNC_SSH, FILES_SYNC_WM_ROOT
 from WhatManager2.utils import read_text
-from home.models import DownloadLocation, ReplicaSet, TransTorrentBase
+from home.models import DownloadLocation, ReplicaSet, TrackerAccount, TransTorrentBase
 
 
 wm_auth = (FILES_SYNC_HTTP_USERNAME, FILES_SYNC_HTTP_PASSWORD)

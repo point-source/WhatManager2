@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 
-from home.models import WhatTorrent, ReplicaSet
+from home.models import ReplicaSet, TrackerAccount, WhatTorrent
 
 
 class InfoHolderTest(TestCase):

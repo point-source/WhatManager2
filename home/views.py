@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 
 from WhatManager2.utils import json_return_method
-from home.models import ReplicaSet, DownloadLocation
+from home.models import DownloadLocation, ReplicaSet, TrackerAccount
 
 
 @login_required
