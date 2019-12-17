@@ -36,7 +36,7 @@ TRANSMISSION_FILES_ROOT = '/mnt/tank/Torrent/transmission-daemon'
 # Transmission's ipv4 bind address. Leave as is or changed to specific ip.
 TRANSMISSION_BIND_HOST = '0.0.0.0'
 # Set this to true to use systemd rather than Upstart for Transmission daemon instances
-TRANSMISSION_USE_SYSTEMD = True
+TRANSMISSION_USE_SYSTEMD = False
 # You only need to set these if you are running transmission_files_sync
 FILES_SYNC_HTTP_USERNAME = 'username'
 FILES_SYNC_HTTP_PASSWORD = 'password'
