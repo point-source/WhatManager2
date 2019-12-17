@@ -202,12 +202,12 @@ class TransInstance(models.Model):
         )
 
     replica_set = models.ForeignKey(ReplicaSet, on_delete=models.CASCADE)
-    name = models.TextField()
-    host = models.TextField()
-    port = models.IntegerField()
-    peer_port = models.IntegerField()
-    username = models.TextField()
-    password = models.TextField()
+    name = models.TextField(default='red_1')
+    host = models.TextField(default='whatmanager2_trans_red_1')
+    port = models.IntegerField(default=9091)
+    peer_port = models.IntegerField(default=21413)
+    username = models.TextField(default=os.getenv('WM_USER', 'transmission'))
+    password = models.TextField(default=settings.TRANSMISSION_PASSWORD)
 
     def __str__(self):
         return 'TransInstance {0}({1}@{2}:{3})'.format(self.name, self.username,
